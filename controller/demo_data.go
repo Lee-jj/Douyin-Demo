@@ -1,5 +1,7 @@
 package controller
 
+import "DOUYIN-DEMO/model"
+
 var DemoVideos = []Video{
 	{
 		Id:            1,
@@ -21,10 +23,10 @@ var DemoComments = []Comment{
 	},
 }
 
-var DemoUser = User{
-	Id:            1,
+var DemoUser = model.User{
+	// Id:            1,
 	Name:          "TestUser",
 	FollowCount:   0,
 	FollowerCount: 0,
-	IsFollow:      false,
+	// IsFollow:      false,
 }

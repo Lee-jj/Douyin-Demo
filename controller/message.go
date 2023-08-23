@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"DOUYIN-DEMO/common"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"sync/atomic"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 var tempChat = map[string][]Message{}
@@ -14,7 +16,7 @@ var tempChat = map[string][]Message{}
 var messageIdSequence = int64(1)
 
 type ChatResponse struct {
-	Response
+	common.Response
 	MessageList []Message `json:"message_list"`
 }
 
@@ -26,7 +28,7 @@ func MessageAction(c *gin.Context) {
 
 	if user, exist := usersLoginInfo[token]; exist {
 		userIdB, _ := strconv.Atoi(toUserId)
-		chatKey := genChatKey(user.Id, int64(userIdB))
+		chatKey := genChatKey(int64(user.FollowCount), int64(userIdB))
 
 		atomic.AddInt64(&messageIdSequence, 1)
 		curMessage := Message{
@@ -40,9 +42,9 @@ func MessageAction(c *gin.Context) {
 		} else {
 			tempChat[chatKey] = []Message{curMessage}
 		}
-		c.JSON(http.StatusOK, Response{StatusCode: 0})
+		c.JSON(http.StatusOK, common.Response{StatusCode: 0})
 	} else {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 	}
 }
 
@@ -53,11 +55,11 @@ func MessageChat(c *gin.Context) {
 
 	if user, exist := usersLoginInfo[token]; exist {
 		userIdB, _ := strconv.Atoi(toUserId)
-		chatKey := genChatKey(user.Id, int64(userIdB))
+		chatKey := genChatKey(int64(user.FollowCount), int64(userIdB))
 
-		c.JSON(http.StatusOK, ChatResponse{Response: Response{StatusCode: 0}, MessageList: tempChat[chatKey]})
+		c.JSON(http.StatusOK, ChatResponse{Response: common.Response{StatusCode: 0}, MessageList: tempChat[chatKey]})
 	} else {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 	}
 }
 
