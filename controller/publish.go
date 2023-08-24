@@ -2,6 +2,7 @@ package controller
 
 import (
 	"DOUYIN-DEMO/common"
+	"DOUYIN-DEMO/service"
 	"fmt"
 	"net/http"
 	"path/filepath"
@@ -11,7 +12,7 @@ import (
 
 type VideoListResponse struct {
 	common.Response
-	VideoList []Video `json:"video_list"`
+	VideoList []service.FeedVideoResponse `json:"video_list"`
 }
 
 // Publish check token then save upload file to public directory
@@ -52,6 +53,12 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
+	token := c.Query("token")
+	guestID := c.Query("user_id")
+
+	// 目标：获得guest_id的所有投稿视频
+	feedVideoResponse, err := service.PublishListService(token, guestID)
+
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: common.Response{
 			StatusCode: 0,

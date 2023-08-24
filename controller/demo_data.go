@@ -1,11 +1,14 @@
 package controller
 
-import "DOUYIN-DEMO/model"
+import (
+	"DOUYIN-DEMO/model"
+	"DOUYIN-DEMO/service"
+)
 
-var DemoVideos = []Video{
+var DemoVideos = []service.FeedVideoResponse{
 	{
-		Id:            1,
-		Author:        DemoUser,
+		ID:            1,
+		Author:        service.FeedUserInfo{},
 		PlayUrl:       "https://www.w3schools.com/html/movie.mp4",
 		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 		FavoriteCount: 0,

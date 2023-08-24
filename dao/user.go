@@ -9,7 +9,7 @@ import (
 )
 
 func GetUserByID(userID uint, tempUser *model.User) error {
-	err := DB.Where("id=?", userID).First(tempUser).Error
+	err := DB.Model(&model.User{}).Where("id=?", userID).First(tempUser).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// this user not in database
@@ -25,7 +25,7 @@ func GetUserByID(userID uint, tempUser *model.User) error {
 }
 
 func GetUserByName(username string, tempUser *model.User) error {
-	err := DB.Where("name=?", username).First(tempUser).Error
+	err := DB.Model(&model.User{}).Where("name=?", username).First(tempUser).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// this user not in database

@@ -40,6 +40,7 @@ func UserInfo(c *gin.Context) {
 				StatusMsg:  err.Error(),
 			},
 		})
+		return
 	}
 
 	tokenClaims, err := middleware.ParseToken(token)
@@ -50,6 +51,7 @@ func UserInfo(c *gin.Context) {
 				StatusMsg:  err.Error(),
 			},
 		})
+		return
 	}
 
 	hostID := tokenClaims.UserID
