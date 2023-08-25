@@ -31,15 +31,14 @@ func Feed(c *gin.Context) {
 
 	if len(feedVideoResponse) == 0 {
 		c.JSON(http.StatusOK, FeedResponse{
-			Response:  common.Response{StatusCode: 1, StatusMsg: "视频库为空"},
+			Response:  common.Response{StatusCode: 0, StatusMsg: "视频库为空"},
 			VideoList: nil,
 			NextTime:  0,
 		})
-		return
 	}
 
 	c.JSON(http.StatusOK, FeedResponse{
-		Response:  common.Response{StatusCode: 0},
+		Response:  common.Response{StatusCode: 0, StatusMsg: "success"},
 		VideoList: feedVideoResponse,
 		NextTime:  nextTime,
 	})

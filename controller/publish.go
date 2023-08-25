@@ -58,11 +58,30 @@ func PublishList(c *gin.Context) {
 
 	// 目标：获得guest_id的所有投稿视频
 	feedVideoResponse, err := service.PublishListService(token, guestID)
+	if err != nil {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response:  common.Response{StatusCode: 1, StatusMsg: err.Error()},
+			VideoList: nil,
+		})
+		return
+	}
 
-	c.JSON(http.StatusOK, VideoListResponse{
-		Response: common.Response{
-			StatusCode: 0,
-		},
-		VideoList: DemoVideos,
-	})
+	if len(feedVideoResponse) == 0 {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response: common.Response{
+				StatusCode: 0,
+				StatusMsg:  "视频库为空",
+			},
+			VideoList: nil,
+		})
+	} else {
+		c.JSON(http.StatusOK, VideoListResponse{
+			Response: common.Response{
+				StatusCode: 0,
+				StatusMsg:  "success",
+			},
+			VideoList: feedVideoResponse,
+		})
+	}
+
 }

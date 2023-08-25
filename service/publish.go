@@ -2,8 +2,10 @@ package service
 
 import (
 	"DOUYIN-DEMO/dao"
+	"DOUYIN-DEMO/middleware"
 	"DOUYIN-DEMO/model"
 	"strconv"
+	"time"
 )
 
 func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
@@ -37,14 +39,41 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 		IsFollow:       false,
 	}
 	if hasToken {
-		feedUserInfo.IsFollow = 
+		tokenClaims, err1 := middleware.ParseToken(token)
+		if err1 == nil && tokenClaims.ExpiresAt >= time.Now().Unix() {
+			feedUserInfo.IsFollow = IsFollow(tokenClaims.UserID, strconv.Itoa(int(tempUser.ID)))
+		}
 	}
 
 	videoList := []model.Video{}
-	err = dao.GetVideoByUserID(uint(guestIDInt), &videoList)
-
 	feedVideoResponse := []FeedVideoResponse{}
-	for _, video := range videoList {
-
+	err = dao.GetVideoByUserID(uint(guestIDInt), &videoList)
+	// the video list is null, it is not an error, so we return null []FeedVideoResponse{} and nil
+	if err != nil {
+		return feedVideoResponse, nil
 	}
+
+	for _, video := range videoList {
+		tempVideo := FeedVideoResponse{}
+
+		tempVideo.ID = video.ID
+		tempVideo.Author = feedUserInfo
+		tempVideo.PlayUrl = video.PlayUrl
+		tempVideo.CoverUrl = video.CoverUrl
+		tempVideo.FavoriteCount = video.FavoriteCount
+		tempVideo.CommentCount = video.CommentCount
+		tempVideo.Title = video.Title
+		tempVideo.IsFavorite = false
+		if hasToken {
+			tokenClaims, err2 := middleware.ParseToken(token)
+			if err2 == nil && tokenClaims.ExpiresAt >= time.Now().Unix() {
+				// For now, let's assume that the host user doesn't like any video
+				tempVideo.IsFavorite = false
+			}
+		}
+
+		feedVideoResponse = append(feedVideoResponse, tempVideo)
+	}
+
+	return feedVideoResponse, nil
 }
