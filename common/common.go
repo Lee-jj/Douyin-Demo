@@ -19,4 +19,7 @@ var (
 	ErrorUserExist       = errors.New("该用户已经存在")
 	ErrorCreateUserFaild = errors.New("创建用户失败")
 	ErrorPasswordWrong   = errors.New("密码错误")
+	ErrorHasNoToken      = errors.New("用户未登录")
+	ErrorHasNoTitle      = errors.New("标题为空")
+	ErrorTokenFaild      = errors.New("Token解析失败")
 )

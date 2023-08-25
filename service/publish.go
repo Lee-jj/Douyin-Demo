@@ -1,9 +1,13 @@
 package service
 
 import (
+	"DOUYIN-DEMO/common"
 	"DOUYIN-DEMO/dao"
 	"DOUYIN-DEMO/middleware"
 	"DOUYIN-DEMO/model"
+	"fmt"
+	"mime/multipart"
+	"path/filepath"
 	"strconv"
 	"time"
 )
@@ -76,4 +80,26 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 	}
 
 	return feedVideoResponse, nil
+}
+
+func PublishService(token, title string, file *multipart.FileHeader) (string, error) {
+	if token == "" {
+		return "", common.ErrorHasNoToken
+	}
+
+	if title == "" {
+		return "", common.ErrorHasNoTitle
+	}
+
+	tokenClaims, err := middleware.ParseToken(token)
+	if err != nil {
+		return "", common.ErrorTokenFaild
+	}
+	userID := tokenClaims.UserID
+
+	// video path
+	originName := filepath.Base(file.Filename)
+	fileName := fmt.Sprintf("%d_%d_%s", userID, time.Now().Unix(), originName)
+	filePath := filepath.Join("/static", fileName)
+
 }
