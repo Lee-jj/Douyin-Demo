@@ -3,9 +3,9 @@ package controller
 import (
 	"DOUYIN-DEMO/common"
 	"DOUYIN-DEMO/service"
-	"fmt"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,14 +25,10 @@ func Publish(c *gin.Context) {
 			StatusCode: 1,
 			StatusMsg:  "读取文件失败",
 		})
-	}
-
-	if _, exist := usersLoginInfo[token]; !exist {
-		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
 
-	data, err := c.FormFile("data")
+	userID, videoName, err := service.GetPlayURL(token, title, file)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 1,
@@ -41,11 +37,29 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	filename := filepath.Base(data.Filename)
-	user := usersLoginInfo[token]
-	finalName := fmt.Sprintf("%d_%s", user.FollowCount, filename)
-	saveFile := filepath.Join("./public/", finalName)
-	if err := c.SaveUploadedFile(data, saveFile); err != nil {
+	videoPath := filepath.Join("./public", videoName)
+	if err = c.SaveUploadedFile(file, videoPath); err != nil {
+		c.JSON(http.StatusOK, common.Response{
+			StatusCode: 1,
+			StatusMsg:  "视频上传失败",
+		})
+		return
+	}
+
+	coverName := strings.Replace(videoName, ".mp4", ".jpeg", 1)
+	err = service.GetCoverURL(videoName, coverName, 1)
+	if err != nil {
+		c.JSON(http.StatusOK, common.Response{
+			StatusCode: 1,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	playURL := "static/" + videoName
+	coverURL := "static/" + coverName
+	err = service.CreateVideo(userID, playURL, coverURL, title)
+	if err != nil {
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
@@ -55,7 +69,7 @@ func Publish(c *gin.Context) {
 
 	c.JSON(http.StatusOK, common.Response{
 		StatusCode: 0,
-		StatusMsg:  finalName + " uploaded successfully",
+		StatusMsg:  videoName + " uploaded successfully",
 	})
 }
 

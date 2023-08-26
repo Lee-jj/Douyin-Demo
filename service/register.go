@@ -38,7 +38,7 @@ func UserRegisterService(userName, passWord string) (TokenResponse, error) {
 	}
 
 	tokenResponse = TokenResponse{
-		UserID: newUser.ID,
+		UserID: newUser.Model.ID,
 		Token:  token,
 	}
 	return tokenResponse, nil

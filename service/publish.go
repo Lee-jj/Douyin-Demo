@@ -5,11 +5,17 @@ import (
 	"DOUYIN-DEMO/dao"
 	"DOUYIN-DEMO/middleware"
 	"DOUYIN-DEMO/model"
+	"bytes"
 	"fmt"
 	"mime/multipart"
+	"os"
 	"path/filepath"
 	"strconv"
 	"time"
+
+	"github.com/disintegration/imaging"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
+	"gorm.io/gorm"
 )
 
 func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
@@ -82,24 +88,71 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 	return feedVideoResponse, nil
 }
 
-func PublishService(token, title string, file *multipart.FileHeader) (string, error) {
+func GetPlayURL(token, title string, file *multipart.FileHeader) (uint, string, error) {
 	if token == "" {
-		return "", common.ErrorHasNoToken
+		return 0, "", common.ErrorHasNoToken
 	}
 
 	if title == "" {
-		return "", common.ErrorHasNoTitle
+		return 0, "", common.ErrorHasNoTitle
 	}
 
 	tokenClaims, err := middleware.ParseToken(token)
 	if err != nil {
-		return "", common.ErrorTokenFaild
+		return 0, "", common.ErrorTokenFaild
 	}
 	userID := tokenClaims.UserID
 
 	// video path
 	originName := filepath.Base(file.Filename)
 	fileName := fmt.Sprintf("%d_%d_%s", userID, time.Now().Unix(), originName)
-	filePath := filepath.Join("/static", fileName)
+	// filePath := filepath.Join("/static", fileName)
+	return userID, fileName, nil
 
+}
+
+func GetCoverURL(videoName, imageName string, frameNum int) error {
+	videoPath := filepath.Join("./public", videoName)
+	imagePath := filepath.Join("./public", imageName)
+
+	fmt.Printf("videoPath: %v", videoPath)
+
+	buf := bytes.NewBuffer(nil)
+	err := ffmpeg.Input(videoPath).
+		Filter("select", ffmpeg.Args{fmt.Sprintf("gte(n,%d)", frameNum)}).
+		Output("pipe:", ffmpeg.KwArgs{"vframes": 1, "format": "image2", "vcodec": "mjpeg"}).
+		WithOutput(buf, os.Stdout).
+		Run()
+	if err != nil {
+		return err
+	}
+
+	img, err := imaging.Decode(buf)
+	if err != nil {
+		return err
+	}
+
+	err = imaging.Save(img, imagePath)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func CreateVideo(userID uint, playURL, coverURL, title string) error {
+	tempVideo := model.Video{
+		Model:         gorm.Model{},
+		AuthorID:      userID,
+		PlayUrl:       playURL,
+		CoverUrl:      coverURL,
+		FavoriteCount: 0,
+		CommentCount:  0,
+		Title:         title,
+	}
+	err := dao.CreateVideo(&tempVideo)
+	if err != nil {
+		return err
+	}
+	return nil
 }

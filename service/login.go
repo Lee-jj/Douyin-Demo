@@ -28,13 +28,13 @@ func UserLoginService(username, password string) (TokenResponse, error) {
 		return tokenResponse, common.ErrorPasswordWrong
 	}
 
-	token, err := middleware.GreateToken(login.ID, login.Name)
+	token, err := middleware.GreateToken(login.Model.ID, login.Name)
 	if err != nil {
 		return tokenResponse, err
 	}
 
 	tokenResponse = TokenResponse{
-		UserID: login.ID,
+		UserID: login.Model.ID,
 		Token:  token,
 	}
 	return tokenResponse, nil

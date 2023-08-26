@@ -16,6 +16,8 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+public/**/*.mp4
+public/**/*.jpeg
 
 # Go workspace file
 go.work
