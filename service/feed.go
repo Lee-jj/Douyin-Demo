@@ -9,14 +9,15 @@ import (
 )
 
 type FeedUserInfo struct {
-	ID             int64  `json:"user_id"`
+	ID             int64  `json:"id"`
 	Name           string `json:"name"`
 	FollowCount    int64  `json:"follow_count"`
 	FollowerCount  int64  `json:"follower_count"`
 	IsFollow       bool   `json:"is_follow"`
-	Avatar         string `json:"avater"`
+	Avatar         string `json:"avatar"`
 	Backgroundmage string `json:"background_image"`
-	TotalFavorite  int64  `json:"total_favorite"`
+	Signature      string `json:"signature"`
+	TotalFavorite  int64  `json:"total_favorited"`
 	FavoriteCount  int64  `json:"favorite_count"`
 }
 

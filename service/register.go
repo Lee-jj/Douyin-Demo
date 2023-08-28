@@ -68,6 +68,7 @@ func CreateRegisterUser(username, password string) (model.User, error) {
 		Password:        password,
 		Avatar:          "http://192.168.31.246:8080/static/defaultAvatar.jpg",
 		BackgroundImage: "http://192.168.31.246:8080/static/defaultBackground.jpg",
+		Signature:       "I have nothing to say",
 	}
 
 	var tempUser model.User
