@@ -35,6 +35,7 @@ func Feed(c *gin.Context) {
 			VideoList: nil,
 			NextTime:  0,
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, FeedResponse{
