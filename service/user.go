@@ -16,7 +16,8 @@ type UserInfoObjectResponse struct {
 	BackgroundImage string `json:"background_image"`
 	Signature       string `json:"signature"`
 	TotalFavorited  int64  `json:"total_favorited"` // 总被点赞数
-	FavoriteCount   int64  `json:"favorite_count"`  // 点赞数
+	WorkCount       int64  `json:"work_count"`
+	FavoriteCount   int64  `json:"favorite_count"` // 点赞数
 }
 
 func UserInfoService(guestID string) (UserInfoObjectResponse, error) {
@@ -32,6 +33,8 @@ func UserInfoService(guestID string) (UserInfoObjectResponse, error) {
 	if err != nil {
 		return userInfoObjectResponse, err
 	}
+	var workCount int64
+	_ = dao.GetVideoNumByUserID(guestIDInt, &workCount)
 
 	userInfoObjectResponse = UserInfoObjectResponse{
 		UserID:          user.ID,
@@ -42,6 +45,7 @@ func UserInfoService(guestID string) (UserInfoObjectResponse, error) {
 		Avatar:          user.Avatar,
 		BackgroundImage: user.BackgroundImage,
 		TotalFavorited:  user.TotalFavorited,
+		WorkCount:       workCount,
 		FavoriteCount:   user.FavoriteCount,
 	}
 	return userInfoObjectResponse, nil

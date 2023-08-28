@@ -78,7 +78,6 @@ func PublishList(c *gin.Context) {
 	token := c.Query("token")
 	guestID := c.Query("user_id")
 
-	// 目标：获得guest_id的所有投稿视频
 	feedVideoResponse, err := service.PublishListService(token, guestID)
 	if err != nil {
 		c.JSON(http.StatusOK, VideoListResponse{

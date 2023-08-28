@@ -18,6 +18,7 @@ type FeedUserInfo struct {
 	Backgroundmage string `json:"background_image"`
 	Signature      string `json:"signature"`
 	TotalFavorite  int64  `json:"total_favorited"`
+	WorkCount      int64  `json:"work_count"`
 	FavoriteCount  int64  `json:"favorite_count"`
 }
 
@@ -63,6 +64,10 @@ func FeedService(token string, videoList []model.Video) ([]FeedVideoResponse, in
 
 		err := dao.GetUserByID(video.AuthorID, &tempUser)
 		if err == nil {
+			// has user info
+			var workCount int64
+			_ = dao.GetVideoNumByUserID(tempUser.ID, &workCount)
+
 			tempFeedUser.ID = tempUser.ID
 			tempFeedUser.Name = tempUser.Name
 			tempFeedUser.FollowCount = tempUser.FollowCount
@@ -70,6 +75,7 @@ func FeedService(token string, videoList []model.Video) ([]FeedVideoResponse, in
 			tempFeedUser.Avatar = tempUser.Avatar
 			tempFeedUser.Backgroundmage = tempUser.BackgroundImage
 			tempFeedUser.TotalFavorite = tempUser.TotalFavorited
+			tempFeedUser.WorkCount = workCount
 			tempFeedUser.FavoriteCount = tempUser.FavoriteCount
 			tempFeedUser.IsFollow = false
 

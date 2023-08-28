@@ -35,6 +35,8 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+	var workCount int64
+	_ = dao.GetVideoNumByUserID(guestIDInt, &workCount)
 
 	feedUserInfo := FeedUserInfo{
 		ID:             tempUser.ID,
@@ -44,6 +46,7 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 		Avatar:         tempUser.Avatar,
 		Backgroundmage: tempUser.BackgroundImage,
 		TotalFavorite:  tempUser.TotalFavorited,
+		WorkCount:      workCount,
 		FavoriteCount:  tempUser.FavoriteCount,
 		IsFollow:       false,
 	}
@@ -56,7 +59,7 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 
 	videoList := []model.Video{}
 	feedVideoResponse := []FeedVideoResponse{}
-	err = dao.GetVideoByUserID(uint(guestIDInt), &videoList)
+	err = dao.GetVideoByUserID(guestIDInt, &videoList)
 	// the video list is null, it is not an error, so we return null []FeedVideoResponse{} and nil
 	if err != nil {
 		return feedVideoResponse, nil
