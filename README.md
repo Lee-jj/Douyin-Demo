@@ -29,3 +29,4 @@ test 目录下为不同场景的功能测试case，可用于验证功能实现�
 ### 当前问题
 1. (已解决)视频发布列表：POST给的 user_id 一直为0 （原因：json标签没有和接口文件的对应，导致解析失败）
 2. 发布完新的视频后，返回到 publish/list 页面 workCount 数据不更新，需要退出登录以后再重新登录才可以，但是从feed点击视频发布者头像查看workCount没问题；同样的路由给POSTman发送，得到的是正确的workCount
+4. (模糊)feed 页面，[官网描述](https://bytedance.feishu.cn/docx/BhEgdmoI3ozdBJxly71cd30vnRc) latest_time 为最新时间戳，而 next_time 为返回视频中发布时间最早的，next_time 作为下次请求的 latest_time，是不是矛盾？

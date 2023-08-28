@@ -30,12 +30,10 @@ type UserInfoResponse struct {
 
 func UserInfo(c *gin.Context) {
 	guestID := c.Query("user_id")
-	// token := c.Query("token")
 	hostIDAny, _ := c.Get("host_id")
-	// hostID := hostIDAny.(string)
 	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
 
-	userInfoObjectResponse, err := service.UserInfoService(guestID)
+	userInfoObjectResponse, err := service.UserInfoService(hostID, guestID)
 	if err != nil {
 		c.JSON(http.StatusOK, UserInfoResponse{
 			Response: common.Response{
@@ -45,21 +43,6 @@ func UserInfo(c *gin.Context) {
 		})
 		return
 	}
-
-	// tokenClaims, err := middleware.ParseToken(token)
-	// if err != nil {
-	// 	c.JSON(http.StatusOK, UserInfoResponse{
-	// 		Response: common.Response{
-	// 			StatusCode: 1,
-	// 			StatusMsg:  err.Error(),
-	// 		},
-	// 	})
-	// 	return
-	// }
-
-	// hostID := tokenClaims.UserID
-
-	userInfoObjectResponse.IsFollowe = service.IsFollow(hostID, guestID)
 
 	c.JSON(http.StatusOK, UserInfoResponse{
 		Response:               common.Response{StatusCode: 0},

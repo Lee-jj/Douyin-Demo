@@ -18,9 +18,7 @@ type VideoListResponse struct {
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
-	// token := c.PostForm("token")
 	hostIDAny, _ := c.Get("host_id")
-	// hostID := hostIDAny.(string)
 	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
 	title := c.PostForm("title")
 	file, err := c.FormFile("data")
@@ -79,13 +77,10 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
-	// token := c.Query("token")
 	guestID := c.Query("user_id")
 	hostIDAny, _ := c.Get("host_id")
-	// hostID := hostIDAny.(string)
 	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
 
-	// feedVideoResponse, err := service.PublishListService(token, guestID)
 	feedVideoResponse, err := service.PublishListService(hostID, guestID)
 	if err != nil {
 		c.JSON(http.StatusOK, VideoListResponse{

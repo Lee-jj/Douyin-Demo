@@ -16,15 +16,7 @@ import (
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
-// func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
 func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
-	// var hasToken bool
-	// if token == "" {
-	// 	hasToken = false
-	// } else {
-	// 	hasToken = true
-	// }
-
 	guestIDInt, err := strconv.ParseInt(guestID, 10, 64)
 	if err != nil {
 		return nil, err
@@ -50,12 +42,7 @@ func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
 		FavoriteCount:  tempUser.FavoriteCount,
 		IsFollow:       false,
 	}
-	// if hasToken {
-	// 	tokenClaims, err1 := middleware.ParseToken(token)
-	// 	if err1 == nil && tokenClaims.ExpiresAt >= time.Now().Unix() {
-	// 		feedUserInfo.IsFollow = IsFollow(tokenClaims.UserID, strconv.Itoa(int(tempUser.ID)))
-	// 	}
-	// }
+
 	feedUserInfo.IsFollow = IsFollow(hostID, guestID)
 
 	videoList := []model.Video{}
@@ -78,13 +65,6 @@ func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
 		tempVideo.Title = video.Title
 		// For now, let's assume that the host user doesn't like any video
 		tempVideo.IsFavorite = false
-		// if hasToken {
-		// 	tokenClaims, err2 := middleware.ParseToken(token)
-		// 	if err2 == nil && tokenClaims.ExpiresAt >= time.Now().Unix() {
-		// 		// For now, let's assume that the host user doesn't like any video
-		// 		tempVideo.IsFavorite = false
-		// 	}
-		// }
 
 		feedVideoResponse = append(feedVideoResponse, tempVideo)
 	}
@@ -93,19 +73,9 @@ func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
 }
 
 func GetPlayURL(hostID, title string, file *multipart.FileHeader) (string, error) {
-	// if token == "" {
-	// 	return 0, "", common.ErrorHasNoToken
-	// }
-
 	if title == "" {
 		return "", common.ErrorHasNoTitle
 	}
-
-	// tokenClaims, err := middleware.ParseToken(token)
-	// if err != nil {
-	// 	return 0, "", common.ErrorTokenFaild
-	// }
-	// userID := tokenClaims.UserID
 
 	// video path
 	originName := filepath.Base(file.Filename)
