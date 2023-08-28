@@ -60,6 +60,8 @@ func JWTMiddleware() gin.HandlerFunc {
 		if token == "" {
 			token = c.PostForm("token")
 		}
+
+		// no token (no login)
 		if token == "" {
 			c.JSON(http.StatusOK, common.Response{
 				StatusCode: 1,
@@ -69,6 +71,7 @@ func JWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// wrong token
 		claims, err := ParseToken(token)
 		if err != nil {
 			c.JSON(http.StatusOK, common.Response{
@@ -79,6 +82,7 @@ func JWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// expired token
 		if time.Now().Unix() > claims.ExpiresAt {
 			c.JSON(http.StatusOK, common.Response{
 				StatusCode: 1,
@@ -89,8 +93,8 @@ func JWTMiddleware() gin.HandlerFunc {
 		}
 
 		// get user_id(host_id) and username
-		c.Set("user_id", claims.UserID)
-		c.Set("username", claims.userName)
+		c.Set("host_id", claims.UserID)
+		c.Set("host_username", claims.userName)
 
 		c.Next()
 	}

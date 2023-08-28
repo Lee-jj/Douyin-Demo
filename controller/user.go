@@ -2,7 +2,6 @@ package controller
 
 import (
 	"DOUYIN-DEMO/common"
-	"DOUYIN-DEMO/middleware"
 	"DOUYIN-DEMO/model"
 	"DOUYIN-DEMO/service"
 	"net/http"
@@ -30,7 +29,9 @@ type UserInfoResponse struct {
 
 func UserInfo(c *gin.Context) {
 	guestID := c.Query("user_id")
-	token := c.Query("token")
+	// token := c.Query("token")
+	hostIDAny, _ := c.Get("host_id")
+	hostID := hostIDAny.(string)
 
 	userInfoObjectResponse, err := service.UserInfoService(guestID)
 	if err != nil {
@@ -43,18 +44,18 @@ func UserInfo(c *gin.Context) {
 		return
 	}
 
-	tokenClaims, err := middleware.ParseToken(token)
-	if err != nil {
-		c.JSON(http.StatusOK, UserInfoResponse{
-			Response: common.Response{
-				StatusCode: 1,
-				StatusMsg:  err.Error(),
-			},
-		})
-		return
-	}
+	// tokenClaims, err := middleware.ParseToken(token)
+	// if err != nil {
+	// 	c.JSON(http.StatusOK, UserInfoResponse{
+	// 		Response: common.Response{
+	// 			StatusCode: 1,
+	// 			StatusMsg:  err.Error(),
+	// 		},
+	// 	})
+	// 	return
+	// }
 
-	hostID := tokenClaims.UserID
+	// hostID := tokenClaims.UserID
 
 	userInfoObjectResponse.IsFollowe = service.IsFollow(hostID, guestID)
 

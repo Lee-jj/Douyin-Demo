@@ -17,7 +17,9 @@ type VideoListResponse struct {
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
-	token := c.PostForm("token")
+	// token := c.PostForm("token")
+	hostIDAny, _ := c.Get("host_id")
+	hostID := hostIDAny.(string)
 	title := c.PostForm("title")
 	file, err := c.FormFile("data")
 	if err != nil {
@@ -28,7 +30,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	userID, videoName, err := service.GetPlayURL(token, title, file)
+	videoName, err := service.GetPlayURL(hostID, title, file)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 1,
@@ -58,7 +60,7 @@ func Publish(c *gin.Context) {
 
 	playURL := "http://192.168.31.246:8080/static/" + videoName
 	coverURL := "http://192.168.31.246:8080/static/" + coverName
-	err = service.CreateVideo(userID, playURL, coverURL, title)
+	err = service.CreateVideo(hostID, playURL, coverURL, title)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 1,
@@ -75,10 +77,13 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
-	token := c.Query("token")
+	// token := c.Query("token")
 	guestID := c.Query("user_id")
+	hostIDAny, _ := c.Get("host_id")
+	hostID := hostIDAny.(string)
 
-	feedVideoResponse, err := service.PublishListService(token, guestID)
+	// feedVideoResponse, err := service.PublishListService(token, guestID)
+	feedVideoResponse, err := service.PublishListService(hostID, guestID)
 	if err != nil {
 		c.JSON(http.StatusOK, VideoListResponse{
 			Response:  common.Response{StatusCode: 1, StatusMsg: err.Error()},

@@ -17,7 +17,7 @@ type FeedResponse struct {
 
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
-	strToken := c.Query("token")
+	token := c.Query("token")
 	strLatestTime := c.Query("latest_time")
 
 	latestTime, err := strconv.ParseInt(strLatestTime, 10, 32)
@@ -27,7 +27,7 @@ func Feed(c *gin.Context) {
 	// fmt.Printf("token: %v; latestTime: %v.\n", strToken, latestTime)
 	videoList, _ := service.GetFeed(latestTime)
 
-	feedVideoResponse, nextTime := service.FeedService(strToken, videoList)
+	feedVideoResponse, nextTime := service.FeedService(token, videoList)
 
 	if len(feedVideoResponse) == 0 {
 		c.JSON(http.StatusOK, FeedResponse{

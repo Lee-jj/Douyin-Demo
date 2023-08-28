@@ -3,7 +3,6 @@ package service
 import (
 	"DOUYIN-DEMO/common"
 	"DOUYIN-DEMO/dao"
-	"DOUYIN-DEMO/middleware"
 	"DOUYIN-DEMO/model"
 	"bytes"
 	"fmt"
@@ -17,13 +16,14 @@ import (
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
-func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
-	var hasToken bool
-	if token == "" {
-		hasToken = false
-	} else {
-		hasToken = true
-	}
+// func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
+func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
+	// var hasToken bool
+	// if token == "" {
+	// 	hasToken = false
+	// } else {
+	// 	hasToken = true
+	// }
 
 	guestIDInt, err := strconv.ParseInt(guestID, 10, 64)
 	if err != nil {
@@ -50,12 +50,13 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 		FavoriteCount:  tempUser.FavoriteCount,
 		IsFollow:       false,
 	}
-	if hasToken {
-		tokenClaims, err1 := middleware.ParseToken(token)
-		if err1 == nil && tokenClaims.ExpiresAt >= time.Now().Unix() {
-			feedUserInfo.IsFollow = IsFollow(tokenClaims.UserID, strconv.Itoa(int(tempUser.ID)))
-		}
-	}
+	// if hasToken {
+	// 	tokenClaims, err1 := middleware.ParseToken(token)
+	// 	if err1 == nil && tokenClaims.ExpiresAt >= time.Now().Unix() {
+	// 		feedUserInfo.IsFollow = IsFollow(tokenClaims.UserID, strconv.Itoa(int(tempUser.ID)))
+	// 	}
+	// }
+	feedUserInfo.IsFollow = IsFollow(hostID, guestID)
 
 	videoList := []model.Video{}
 	feedVideoResponse := []FeedVideoResponse{}
@@ -75,14 +76,15 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 		tempVideo.FavoriteCount = video.FavoriteCount
 		tempVideo.CommentCount = video.CommentCount
 		tempVideo.Title = video.Title
+		// For now, let's assume that the host user doesn't like any video
 		tempVideo.IsFavorite = false
-		if hasToken {
-			tokenClaims, err2 := middleware.ParseToken(token)
-			if err2 == nil && tokenClaims.ExpiresAt >= time.Now().Unix() {
-				// For now, let's assume that the host user doesn't like any video
-				tempVideo.IsFavorite = false
-			}
-		}
+		// if hasToken {
+		// 	tokenClaims, err2 := middleware.ParseToken(token)
+		// 	if err2 == nil && tokenClaims.ExpiresAt >= time.Now().Unix() {
+		// 		// For now, let's assume that the host user doesn't like any video
+		// 		tempVideo.IsFavorite = false
+		// 	}
+		// }
 
 		feedVideoResponse = append(feedVideoResponse, tempVideo)
 	}
@@ -90,26 +92,26 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 	return feedVideoResponse, nil
 }
 
-func GetPlayURL(token, title string, file *multipart.FileHeader) (int64, string, error) {
-	if token == "" {
-		return 0, "", common.ErrorHasNoToken
-	}
+func GetPlayURL(hostID, title string, file *multipart.FileHeader) (string, error) {
+	// if token == "" {
+	// 	return 0, "", common.ErrorHasNoToken
+	// }
 
 	if title == "" {
-		return 0, "", common.ErrorHasNoTitle
+		return "", common.ErrorHasNoTitle
 	}
 
-	tokenClaims, err := middleware.ParseToken(token)
-	if err != nil {
-		return 0, "", common.ErrorTokenFaild
-	}
-	userID := tokenClaims.UserID
+	// tokenClaims, err := middleware.ParseToken(token)
+	// if err != nil {
+	// 	return 0, "", common.ErrorTokenFaild
+	// }
+	// userID := tokenClaims.UserID
 
 	// video path
 	originName := filepath.Base(file.Filename)
-	fileName := fmt.Sprintf("%d_%d_%s", userID, time.Now().Unix(), originName)
+	fileName := fmt.Sprintf("%s_%d_%s", hostID, time.Now().Unix(), originName)
 	// filePath := filepath.Join("/static", fileName)
-	return userID, fileName, nil
+	return fileName, nil
 
 }
 
@@ -142,7 +144,12 @@ func GetCoverURL(videoName, imageName string, frameNum int) error {
 	return nil
 }
 
-func CreateVideo(userID int64, playURL, coverURL, title string) error {
+func CreateVideo(hostID string, playURL, coverURL, title string) error {
+	userID, err := strconv.ParseInt(hostID, 10, 64)
+	if err != nil {
+		return err
+	}
+
 	tempVideo := model.Video{
 		AuthorID:      userID,
 		PlayUrl:       playURL,
@@ -151,9 +158,10 @@ func CreateVideo(userID int64, playURL, coverURL, title string) error {
 		CommentCount:  0,
 		Title:         title,
 	}
-	err := dao.CreateVideo(&tempVideo)
+	err = dao.CreateVideo(&tempVideo)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

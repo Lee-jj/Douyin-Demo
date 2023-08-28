@@ -48,11 +48,11 @@ func GetFeed(lastTime int64) ([]model.Video, error) {
 }
 
 func FeedService(token string, videoList []model.Video) ([]FeedVideoResponse, int64) {
-	var tokenIsNil bool
+	var hasToken bool
 	if token == "" {
-		tokenIsNil = true
+		hasToken = false
 	} else {
-		tokenIsNil = false
+		hasToken = true
 	}
 
 	feedVideoResponse := []FeedVideoResponse{}
@@ -79,11 +79,11 @@ func FeedService(token string, videoList []model.Video) ([]FeedVideoResponse, in
 			tempFeedUser.FavoriteCount = tempUser.FavoriteCount
 			tempFeedUser.IsFollow = false
 
-			if !tokenIsNil {
+			if hasToken {
 				tokenClaims, err1 := middleware.ParseToken(token)
 				// token not expired
 				if err1 == nil && time.Now().Unix() <= tokenClaims.ExpiresAt {
-					tempFeedUser.IsFollow = IsFollow(tokenClaims.UserID, strconv.Itoa(int(tempUser.ID)))
+					tempFeedUser.IsFollow = IsFollow(strconv.Itoa(int(tokenClaims.UserID)), strconv.Itoa(int(tempUser.ID)))
 				}
 			}
 		}
@@ -97,7 +97,7 @@ func FeedService(token string, videoList []model.Video) ([]FeedVideoResponse, in
 		tempVideo.Title = video.Title
 		tempVideo.IsFavorite = false
 
-		if !tokenIsNil {
+		if hasToken {
 			tokenClaims, err1 := middleware.ParseToken(token)
 			// token not expired
 			if err1 == nil && time.Now().Unix() <= tokenClaims.ExpiresAt {

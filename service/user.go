@@ -51,12 +51,7 @@ func UserInfoService(guestID string) (UserInfoObjectResponse, error) {
 	return userInfoObjectResponse, nil
 }
 
-func IsFollow(hostID int64, guestID string) bool {
-	guestIDInt, err := strconv.ParseInt(guestID, 10, 64)
-	if err != nil {
-		return false
-	}
-
+func IsFollow(hostID, guestID string) bool {
 	// For now, let's assume that the host user follows all users except himself
-	return hostID != guestIDInt
+	return hostID != guestID
 }

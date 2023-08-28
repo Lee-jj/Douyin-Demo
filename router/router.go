@@ -2,6 +2,7 @@ package router
 
 import (
 	"DOUYIN-DEMO/controller"
+	"DOUYIN-DEMO/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,11 +15,11 @@ func InitRouter(r *gin.Engine) {
 
 	// basic apis
 	apiRouter.GET("/feed/", controller.Feed)
-	apiRouter.GET("/user/", controller.UserInfo)
+	apiRouter.GET("/user/", middleware.JWTMiddleware(), controller.UserInfo)
 	apiRouter.POST("/user/register/", controller.Register)
 	apiRouter.POST("/user/login/", controller.Login)
-	apiRouter.POST("/publish/action/", controller.Publish)
-	apiRouter.GET("/publish/list/", controller.PublishList)
+	apiRouter.POST("/publish/action/", middleware.JWTMiddleware(), controller.Publish)
+	apiRouter.GET("/publish/list/", middleware.JWTMiddleware(), controller.PublishList)
 
 	// extra apis - I
 	apiRouter.POST("/favorite/action/", controller.FavoriteAction)
