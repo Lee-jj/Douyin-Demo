@@ -20,7 +20,7 @@ type UserInfoObjectResponse struct {
 	FavoriteCount   int64  `json:"favorite_count"` // 点赞数
 }
 
-func UserInfoService(guestID string) (UserInfoObjectResponse, error) {
+func UserInfoService(hostID, guestID string) (UserInfoObjectResponse, error) {
 	userInfoObjectResponse := UserInfoObjectResponse{}
 
 	guestIDInt, err := strconv.ParseInt(guestID, 10, 64)
@@ -48,6 +48,8 @@ func UserInfoService(guestID string) (UserInfoObjectResponse, error) {
 		WorkCount:       workCount,
 		FavoriteCount:   user.FavoriteCount,
 	}
+	userInfoObjectResponse.IsFollowe = IsFollow(hostID, guestID)
+
 	return userInfoObjectResponse, nil
 }
 
