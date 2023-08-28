@@ -5,6 +5,7 @@ import (
 	"DOUYIN-DEMO/service"
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,8 @@ type VideoListResponse struct {
 func Publish(c *gin.Context) {
 	// token := c.PostForm("token")
 	hostIDAny, _ := c.Get("host_id")
-	hostID := hostIDAny.(string)
+	// hostID := hostIDAny.(string)
+	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
 	title := c.PostForm("title")
 	file, err := c.FormFile("data")
 	if err != nil {
@@ -80,7 +82,8 @@ func PublishList(c *gin.Context) {
 	// token := c.Query("token")
 	guestID := c.Query("user_id")
 	hostIDAny, _ := c.Get("host_id")
-	hostID := hostIDAny.(string)
+	// hostID := hostIDAny.(string)
+	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
 
 	// feedVideoResponse, err := service.PublishListService(token, guestID)
 	feedVideoResponse, err := service.PublishListService(hostID, guestID)

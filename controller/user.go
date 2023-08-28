@@ -5,6 +5,7 @@ import (
 	"DOUYIN-DEMO/model"
 	"DOUYIN-DEMO/service"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,7 +32,8 @@ func UserInfo(c *gin.Context) {
 	guestID := c.Query("user_id")
 	// token := c.Query("token")
 	hostIDAny, _ := c.Get("host_id")
-	hostID := hostIDAny.(string)
+	// hostID := hostIDAny.(string)
+	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
 
 	userInfoObjectResponse, err := service.UserInfoService(guestID)
 	if err != nil {
