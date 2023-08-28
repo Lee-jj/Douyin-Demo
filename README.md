@@ -27,4 +27,5 @@ test 目录下为不同场景的功能测试case，可用于验证功能实现�
 测试数据写在 demo_data.go 中，用于列表接口的 mock 测试
 
 ### 当前问题
-1. 视频发布列表：POST给的user_id一直为0(以解决，原因：json标签没有和接口文件的对应，导致解析失败) 
+1. (已解决)视频发布列表：POST给的 user_id 一直为0 （原因：json标签没有和接口文件的对应，导致解析失败）
+2. 发布完新的视频后，返回到 publish/list 页面 workCount 数据不更新，需要退出登录以后再重新登录才可以，但是从feed点击视频发布者头像查看workCount没问题；同样的路由给POSTman发送，得到的是正确的workCount
