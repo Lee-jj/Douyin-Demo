@@ -13,9 +13,10 @@ import (
 
 type VideoListResponse struct {
 	common.Response
-	VideoList []service.FeedVideoResponse `json:"video_list"`
+	VideoList []service.VideoResponse `json:"video_list"`
 }
 
+/*************** Publish Action Module ***************/
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
 	hostIDAny, _ := c.Get("host_id")
@@ -75,6 +76,7 @@ func Publish(c *gin.Context) {
 	})
 }
 
+/*************** Publish List Module ***************/
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
 	guestID := c.Query("user_id")

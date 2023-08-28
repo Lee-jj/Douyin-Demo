@@ -16,7 +16,7 @@ import (
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
-func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
+func PublishListService(hostID, guestID string) ([]VideoResponse, error) {
 	guestIDInt, err := strconv.ParseInt(guestID, 10, 64)
 	if err != nil {
 		return nil, err
@@ -30,23 +30,23 @@ func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
 	var workCount int64
 	_ = dao.GetVideoNumByUserID(guestIDInt, &workCount)
 
-	feedUserInfo := FeedUserInfo{
-		ID:             tempUser.ID,
-		Name:           tempUser.Name,
-		FollowCount:    tempUser.FollowCount,
-		FollowerCount:  tempUser.FollowerCount,
-		Avatar:         tempUser.Avatar,
-		Backgroundmage: tempUser.BackgroundImage,
-		TotalFavorite:  tempUser.TotalFavorited,
-		WorkCount:      workCount,
-		FavoriteCount:  tempUser.FavoriteCount,
-		IsFollow:       false,
+	feedUserInfo := UserInfoResponse{
+		UserID:          tempUser.ID,
+		UserName:        tempUser.Name,
+		FollowCount:     tempUser.FollowCount,
+		FollowerCount:   tempUser.FollowerCount,
+		Avatar:          tempUser.Avatar,
+		BackgroundImage: tempUser.BackgroundImage,
+		TotalFavorited:  tempUser.TotalFavorited,
+		WorkCount:       workCount,
+		FavoriteCount:   tempUser.FavoriteCount,
+		IsFollow:        false,
 	}
 
 	feedUserInfo.IsFollow = IsFollow(hostID, guestID)
 
 	videoList := []model.Video{}
-	feedVideoResponse := []FeedVideoResponse{}
+	feedVideoResponse := []VideoResponse{}
 	err = dao.GetVideoByUserID(guestIDInt, &videoList)
 	// the video list is null, it is not an error, so we return null []FeedVideoResponse{} and nil
 	if err != nil {
@@ -54,7 +54,7 @@ func PublishListService(hostID, guestID string) ([]FeedVideoResponse, error) {
 	}
 
 	for _, video := range videoList {
-		tempVideo := FeedVideoResponse{}
+		tempVideo := VideoResponse{}
 
 		tempVideo.ID = video.ID
 		tempVideo.Author = feedUserInfo

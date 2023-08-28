@@ -8,29 +8,29 @@ import (
 	"time"
 )
 
-type FeedUserInfo struct {
-	ID             int64  `json:"id"`
-	Name           string `json:"name"`
-	FollowCount    int64  `json:"follow_count"`
-	FollowerCount  int64  `json:"follower_count"`
-	IsFollow       bool   `json:"is_follow"`
-	Avatar         string `json:"avatar"`
-	Backgroundmage string `json:"background_image"`
-	Signature      string `json:"signature"`
-	TotalFavorite  int64  `json:"total_favorited"`
-	WorkCount      int64  `json:"work_count"`
-	FavoriteCount  int64  `json:"favorite_count"`
+type UserInfoResponse struct {
+	UserID          int64  `json:"id"`
+	UserName        string `json:"name"`
+	FollowCount     int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavorited  int64  `json:"total_favorited"`
+	WorkCount       int64  `json:"work_count"`
+	FavoriteCount   int64  `json:"favorite_count"`
 }
 
-type FeedVideoResponse struct {
-	ID            int64        `json:"id"`
-	Author        FeedUserInfo `json:"author"`
-	PlayUrl       string       `json:"play_url"`
-	CoverUrl      string       `json:"cover_url"`
-	FavoriteCount int64        `json:"favorite_count"`
-	CommentCount  int64        `json:"comment_count"`
-	IsFavorite    bool         `json:"is_favorite"`
-	Title         string       `json:"title"`
+type VideoResponse struct {
+	ID            int64            `json:"id"`
+	Author        UserInfoResponse `json:"author"`
+	PlayUrl       string           `json:"play_url"`
+	CoverUrl      string           `json:"cover_url"`
+	FavoriteCount int64            `json:"favorite_count"`
+	CommentCount  int64            `json:"comment_count"`
+	IsFavorite    bool             `json:"is_favorite"`
+	Title         string           `json:"title"`
 }
 
 func GetFeed(lastTime int64) ([]model.Video, error) {
@@ -47,7 +47,7 @@ func GetFeed(lastTime int64) ([]model.Video, error) {
 	return videoList, err
 }
 
-func FeedService(token string, videoList []model.Video) ([]FeedVideoResponse, int64) {
+func FeedService(token string, videoList []model.Video) ([]VideoResponse, int64) {
 	var hasToken bool
 	if token == "" {
 		hasToken = false
@@ -55,11 +55,11 @@ func FeedService(token string, videoList []model.Video) ([]FeedVideoResponse, in
 		hasToken = true
 	}
 
-	feedVideoResponse := []FeedVideoResponse{}
+	feedVideoResponse := []VideoResponse{}
 	var nextTime int64
 	for _, video := range videoList {
-		tempFeedUser := FeedUserInfo{}
-		tempVideo := FeedVideoResponse{}
+		tempFeedUser := UserInfoResponse{}
+		tempVideo := VideoResponse{}
 		tempUser := model.User{}
 
 		err := dao.GetUserByID(video.AuthorID, &tempUser)
@@ -68,13 +68,13 @@ func FeedService(token string, videoList []model.Video) ([]FeedVideoResponse, in
 			var workCount int64
 			_ = dao.GetVideoNumByUserID(tempUser.ID, &workCount)
 
-			tempFeedUser.ID = tempUser.ID
-			tempFeedUser.Name = tempUser.Name
+			tempFeedUser.UserID = tempUser.ID
+			tempFeedUser.UserName = tempUser.Name
 			tempFeedUser.FollowCount = tempUser.FollowCount
 			tempFeedUser.FollowerCount = tempUser.FollowerCount
 			tempFeedUser.Avatar = tempUser.Avatar
-			tempFeedUser.Backgroundmage = tempUser.BackgroundImage
-			tempFeedUser.TotalFavorite = tempUser.TotalFavorited
+			tempFeedUser.BackgroundImage = tempUser.BackgroundImage
+			tempFeedUser.TotalFavorited = tempUser.TotalFavorited
 			tempFeedUser.WorkCount = workCount
 			tempFeedUser.FavoriteCount = tempUser.FavoriteCount
 			tempFeedUser.IsFollow = false
