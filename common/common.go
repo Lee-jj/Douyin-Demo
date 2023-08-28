@@ -23,4 +23,5 @@ var (
 	ErrorHasNoTitle       = errors.New("标题为空")
 	ErrorTokenFaild       = errors.New("Token解析失败")
 	ErrorCreateVideoFaild = errors.New("上传视频数据库失败")
+	ErrorTokenExpired     = errors.New("Token过期")
 )

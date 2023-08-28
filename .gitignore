@@ -18,6 +18,7 @@
 # vendor/
 public/**/*.mp4
 public/**/*.jpeg
+public/**/*.jpg
 
 # Go workspace file
 go.work

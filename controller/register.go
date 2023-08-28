@@ -10,8 +10,7 @@ import (
 
 type UserRegisterPesponse struct {
 	common.Response
-	UserID uint   `json:"user_id"`
-	Token  string `json:"token"`
+	service.TokenResponse
 }
 
 func Register(c *gin.Context) {
@@ -32,8 +31,8 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusOK, UserRegisterPesponse{
 		Response: common.Response{
 			StatusCode: 0,
+			StatusMsg:  "注册&登录成功",
 		},
-		UserID: tokenResponse.UserID,
-		Token:  tokenResponse.Token,
+		TokenResponse: tokenResponse,
 	})
 }

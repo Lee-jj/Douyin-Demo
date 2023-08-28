@@ -8,8 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetUserByID(userID uint, tempUser *model.User) error {
-	err := DB.Model(&model.User{}).Where("id=?", userID).First(tempUser).Error
+func GetUserByID(userID int64, tempUser *model.User) error {
+	err := DB.Model(&model.User{}).Where("user_id=?", userID).First(tempUser).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// this user not in database

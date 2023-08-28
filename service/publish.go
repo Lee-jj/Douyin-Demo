@@ -15,7 +15,6 @@ import (
 
 	"github.com/disintegration/imaging"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
-	"gorm.io/gorm"
 )
 
 func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
@@ -26,13 +25,13 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 		hasToken = true
 	}
 
-	guestIDInt, err := strconv.ParseUint(guestID, 10, 64)
+	guestIDInt, err := strconv.ParseInt(guestID, 10, 64)
 	if err != nil {
 		return nil, err
 	}
 
 	tempUser := model.User{}
-	err = dao.GetUserByID(uint(guestIDInt), &tempUser)
+	err = dao.GetUserByID(guestIDInt, &tempUser)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +87,7 @@ func PublishListService(token, guestID string) ([]FeedVideoResponse, error) {
 	return feedVideoResponse, nil
 }
 
-func GetPlayURL(token, title string, file *multipart.FileHeader) (uint, string, error) {
+func GetPlayURL(token, title string, file *multipart.FileHeader) (int64, string, error) {
 	if token == "" {
 		return 0, "", common.ErrorHasNoToken
 	}
@@ -140,9 +139,8 @@ func GetCoverURL(videoName, imageName string, frameNum int) error {
 	return nil
 }
 
-func CreateVideo(userID uint, playURL, coverURL, title string) error {
+func CreateVideo(userID int64, playURL, coverURL, title string) error {
 	tempVideo := model.Video{
-		Model:         gorm.Model{},
 		AuthorID:      userID,
 		PlayUrl:       playURL,
 		CoverUrl:      coverURL,

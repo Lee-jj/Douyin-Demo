@@ -8,7 +8,7 @@ import (
 )
 
 func UserLoginService(username, password string) (TokenResponse, error) {
-	tokenResponse := TokenResponse{}
+	var tokenResponse TokenResponse
 
 	// username and password valid
 	err := isUserValid(username, password)
@@ -28,13 +28,13 @@ func UserLoginService(username, password string) (TokenResponse, error) {
 		return tokenResponse, common.ErrorPasswordWrong
 	}
 
-	token, err := middleware.GreateToken(login.Model.ID, login.Name)
+	token, err := middleware.GreateToken(login.ID, login.Name)
 	if err != nil {
 		return tokenResponse, err
 	}
 
 	tokenResponse = TokenResponse{
-		UserID: login.Model.ID,
+		UserID: login.ID,
 		Token:  token,
 	}
 	return tokenResponse, nil

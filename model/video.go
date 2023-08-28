@@ -1,14 +1,15 @@
 package model
 
-import "gorm.io/gorm"
+import "time"
 
 // default table name is "videos"
 type Video struct {
-	gorm.Model
-	AuthorID      uint   `json:"author_id"`
-	PlayUrl       string `json:"play_url"`
-	CoverUrl      string `json:"cover_url"`
-	FavoriteCount uint   `json:"favorite_count"`
-	CommentCount  uint   `json:"comment_count"`
-	Title         string `json:"title"`
+	ID            int64     `gorm:"column:video_id; primary_key;"`
+	CreatedAt     time.Time `gorm:"column:created_at"`
+	AuthorID      int64     `gorm:"column:author_id"`
+	PlayUrl       string    `gorm:"column:play_url"`
+	CoverUrl      string    `gorm:"column:cover_url"`
+	FavoriteCount int64     `gorm:"column:favorite_count"`
+	CommentCount  int64     `gorm:"column:comment_count"`
+	Title         string    `gorm:"column:title"`
 }

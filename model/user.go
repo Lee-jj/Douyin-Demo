@@ -1,16 +1,15 @@
 package model
 
-import "gorm.io/gorm"
-
 // default table name is "users"
 type User struct {
-	gorm.Model
-	Name            string `json:"name"` // 要求用户名不重复
-	Password        string `json:"password"`
-	FollowCount     uint   `json:"follow_count"`   // 关注数
-	FollowerCount   uint   `json:"follower_count"` // 被关注数
-	Avatar          string `json:"avatar"`         // 头像
-	BackgroundImage string `json:"background_image"`
-	TotalFavorited  uint   `json:"total_favorited"` // 总被点赞数
-	FavoriteCount   uint   `json:"favorite_count"`  // 点赞数
+	ID              int64  `gorm:"column:user_id; primary_key"`
+	Name            string `gorm:"column:name"` // 要求用户名不重复
+	Password        string `gorm:"column:password"`
+	FollowCount     int64  `gorm:"column:follow_count"`   // 关注数
+	FollowerCount   int64  `gorm:"column:follower_count"` // 被关注数
+	Avatar          string `gorm:"column:avatar"`         // 头像
+	BackgroundImage string `gorm:"column:background_image"`
+	Signature       string `gorm:"column:signature"`
+	TotalFavorited  int64  `gorm:"column:total_favorited"` // 总被点赞数
+	FavoriteCount   int64  `gorm:"column:favorite_count"`  // 点赞数
 }

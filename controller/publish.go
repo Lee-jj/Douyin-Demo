@@ -56,8 +56,8 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	playURL := "static/" + videoName
-	coverURL := "static/" + coverName
+	playURL := "http://192.168.31.246:8080/static/" + videoName
+	coverURL := "http://192.168.31.246:8080/static/" + coverName
 	err = service.CreateVideo(userID, playURL, coverURL, title)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{

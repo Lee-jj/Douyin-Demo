@@ -1,20 +1,24 @@
 package middleware
 
 import (
+	"DOUYIN-DEMO/common"
+	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 var SecretKey = []byte("this is a jwt-go key")
 
 type Claims struct {
-	UserID   uint `json:"user_id"`
+	UserID   int64 `json:"user_id"`
 	userName string
 	jwt.StandardClaims
 }
 
-func GreateToken(userID uint, userName string) (string, error) {
+func GreateToken(userID int64, userName string) (string, error) {
 	nowTime := time.Now()
 	expireTime := time.Now().Add(time.Hour * 24)
 	claims := Claims{
@@ -46,4 +50,48 @@ func ParseToken(token string) (*Claims, error) {
 	}
 
 	return nil, err
+}
+
+func JWTMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println("middleware jwt check the token.")
+
+		token := c.Query("token")
+		if token == "" {
+			token = c.PostForm("token")
+		}
+		if token == "" {
+			c.JSON(http.StatusOK, common.Response{
+				StatusCode: 1,
+				StatusMsg:  common.ErrorHasNoToken.Error(),
+			})
+			c.Abort()
+			return
+		}
+
+		claims, err := ParseToken(token)
+		if err != nil {
+			c.JSON(http.StatusOK, common.Response{
+				StatusCode: 1,
+				StatusMsg:  common.ErrorTokenFaild.Error(),
+			})
+			c.Abort()
+			return
+		}
+
+		if time.Now().Unix() > claims.ExpiresAt {
+			c.JSON(http.StatusOK, common.Response{
+				StatusCode: 1,
+				StatusMsg:  common.ErrorTokenExpired.Error(),
+			})
+			c.Abort()
+			return
+		}
+
+		// get user_id(host_id) and username
+		c.Set("user_id", claims.UserID)
+		c.Set("username", claims.userName)
+
+		c.Next()
+	}
 }

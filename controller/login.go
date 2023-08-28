@@ -29,7 +29,10 @@ func Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, UserLoginResponse{
-		Response:      common.Response{StatusCode: 0},
+		Response: common.Response{
+			StatusCode: 0,
+			StatusMsg:  "登录成功",
+		},
 		TokenResponse: userTokenLoginResponse,
 	})
 }

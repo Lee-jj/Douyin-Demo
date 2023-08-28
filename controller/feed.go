@@ -11,8 +11,8 @@ import (
 
 type FeedResponse struct {
 	common.Response
-	VideoList []service.FeedVideoResponse `json:"video_list,omitempty"`
-	NextTime  int64                       `json:"next_time,omitempty"`
+	VideoList []service.FeedVideoResponse `json:"video_list"`
+	NextTime  int64                       `json:"next_time"`
 }
 
 // Feed same demo video list for every request

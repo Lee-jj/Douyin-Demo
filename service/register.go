@@ -15,12 +15,12 @@ const (
 )
 
 type TokenResponse struct {
-	UserID uint   `json:"user_id"`
+	UserID int64  `json:"user_id"`
 	Token  string `json:"token"`
 }
 
 func UserRegisterService(userName, passWord string) (TokenResponse, error) {
-	tokenResponse := TokenResponse{}
+	var tokenResponse TokenResponse
 
 	err := isUserValid(userName, passWord)
 	if err != nil {
@@ -38,7 +38,7 @@ func UserRegisterService(userName, passWord string) (TokenResponse, error) {
 	}
 
 	tokenResponse = TokenResponse{
-		UserID: newUser.Model.ID,
+		UserID: newUser.ID,
 		Token:  token,
 	}
 	return tokenResponse, nil
@@ -66,17 +66,12 @@ func CreateRegisterUser(username, password string) (model.User, error) {
 	newUser := model.User{
 		Name:            username,
 		Password:        password,
-		Avatar:          "https://bpic.51yuansu.com/pic3/cover/01/69/80/595f67c2239cb_610.jpg?x-oss-process=image/resize,w_260/sharpen,100",
-		BackgroundImage: "https://th.bing.com/th/id/OIP.LpGCZtPBuuR8sZ3cisTtwAHaEo?pid=ImgDet&rs=1",
-	}
-
-	err := dao.DB.AutoMigrate(&model.User{})
-	if err != nil {
-		return newUser, common.ErrorDBMigrateFaild
+		Avatar:          "http://192.168.31.246:8080/static/defaultAvatar.jpg",
+		BackgroundImage: "http://192.168.31.246:8080/static/defaultBackground.jpg",
 	}
 
 	var tempUser model.User
-	err = dao.GetUserByName(username, &tempUser)
+	err := dao.GetUserByName(username, &tempUser)
 	if err == nil {
 		return newUser, common.ErrorUserExist
 	}
