@@ -24,4 +24,7 @@ var (
 	ErrorTokenFaild       = errors.New("Token解析失败")
 	ErrorCreateVideoFaild = errors.New("上传视频数据库失败")
 	ErrorTokenExpired     = errors.New("Token过期")
+	ErrorWrongArgument    = errors.New("错误参数")
+	ErrorAlreadyLiked     = errors.New("点赞失败，已经点赞过该视频了")
+	ErrorNotLiked         = errors.New("取消失败，没有点赞过该视频")
 )
