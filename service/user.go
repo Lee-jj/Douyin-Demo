@@ -33,8 +33,6 @@ func UserInfoService(hostID, guestID string) (UserInfoResponse, error) {
 	if err != nil {
 		return userInfoObjectResponse, err
 	}
-	var workCount int64
-	_ = dao.GetVideoNumByUserID(guestIDInt, &workCount)
 
 	userInfoObjectResponse = UserInfoResponse{
 		UserID:          user.ID,
@@ -45,7 +43,7 @@ func UserInfoService(hostID, guestID string) (UserInfoResponse, error) {
 		Avatar:          user.Avatar,
 		BackgroundImage: user.BackgroundImage,
 		TotalFavorited:  user.TotalFavorited,
-		WorkCount:       workCount,
+		WorkCount:       user.WorkCount,
 		FavoriteCount:   user.FavoriteCount,
 	}
 	userInfoObjectResponse.IsFollow = IsFollow(hostID, guestID)

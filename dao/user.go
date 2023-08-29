@@ -48,3 +48,24 @@ func CreateUser(tempUser *model.User) error {
 
 	return nil
 }
+
+func AddUserWorkCount(authorID int64) error {
+	err := DB.Model(&model.User{}).Where("user_id = ?", authorID).Update("work_count", gorm.Expr("work_count + 1")).Error
+	return err
+}
+
+func AddUserFavoriteCount(userID, addNum int64) error {
+	err := DB.Model(&model.User{}).Where("user_id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count + ?", addNum)).Error
+	return err
+}
+
+func AddUserTotalFavorited(videoID, addNum int64) error {
+	var video model.Video
+	err := GetVideoByVideoID(videoID, &video)
+	if err != nil {
+		return err
+	}
+
+	err = DB.Model(&model.User{}).Where("user_id = ?", video.AuthorID).Update("total_favorited", gorm.Expr("total_favorited + ?", addNum)).Error
+	return err
+}

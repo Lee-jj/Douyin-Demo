@@ -11,5 +11,6 @@ type User struct {
 	BackgroundImage string `gorm:"column:background_image"`
 	Signature       string `gorm:"column:signature"`
 	TotalFavorited  int64  `gorm:"column:total_favorited"` // 总被点赞数
-	FavoriteCount   int64  `gorm:"column:favorite_count"`  // 点赞数
+	WorkCount       int64  `gorm:"column:work_count"`
+	FavoriteCount   int64  `gorm:"column:favorite_count"` // 点赞数
 }

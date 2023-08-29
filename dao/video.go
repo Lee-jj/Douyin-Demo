@@ -3,6 +3,8 @@ package dao
 import (
 	"DOUYIN-DEMO/common"
 	"DOUYIN-DEMO/model"
+
+	"gorm.io/gorm"
 )
 
 func GetVideoByTime(timeFormat string, videoNum int, videoList *[]model.Video) error {
@@ -28,15 +30,12 @@ func CreateVideo(tempVideo *model.Video) error {
 	return nil
 }
 
-func GetVideoNumByUserID(guestID int64, videoNum *int64) error {
-	err := DB.Model(&model.Video{}).Where("author_id = ?", guestID).Count(videoNum).Error
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func GetFavoriteVideoByUserID(guestID int64, favoriteList *[]model.Favorite) error {
 	err := DB.Model(&model.Favorite{}).Where("user_id = ?", guestID).Find(favoriteList).Error
+	return err
+}
+
+func AddVideoFavoriteCount(videoID, addNum int64) error {
+	err := DB.Model(&model.Video{}).Where("video_id = ?", videoID).Update("favorite_count", gorm.Expr("favorite_count + ?", addNum)).Error
 	return err
 }

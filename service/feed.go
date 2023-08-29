@@ -65,9 +65,6 @@ func FeedService(token string, videoList []model.Video) ([]VideoResponse, int64)
 		err := dao.GetUserByID(video.AuthorID, &tempUser)
 		if err == nil {
 			// has user info
-			var workCount int64
-			_ = dao.GetVideoNumByUserID(tempUser.ID, &workCount)
-
 			tempFeedUser.UserID = tempUser.ID
 			tempFeedUser.UserName = tempUser.Name
 			tempFeedUser.FollowCount = tempUser.FollowCount
@@ -75,7 +72,7 @@ func FeedService(token string, videoList []model.Video) ([]VideoResponse, int64)
 			tempFeedUser.Avatar = tempUser.Avatar
 			tempFeedUser.BackgroundImage = tempUser.BackgroundImage
 			tempFeedUser.TotalFavorited = tempUser.TotalFavorited
-			tempFeedUser.WorkCount = workCount
+			tempFeedUser.WorkCount = tempUser.WorkCount
 			tempFeedUser.FavoriteCount = tempUser.FavoriteCount
 			tempFeedUser.IsFollow = false
 

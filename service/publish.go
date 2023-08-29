@@ -25,8 +25,6 @@ func PublishListService(hostID, guestID string) ([]VideoResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	var workCount int64
-	_ = dao.GetVideoNumByUserID(guestIDInt, &workCount)
 
 	feedUserInfo := UserInfoResponse{
 		UserID:          tempUser.ID,
@@ -36,7 +34,7 @@ func PublishListService(hostID, guestID string) ([]VideoResponse, error) {
 		Avatar:          tempUser.Avatar,
 		BackgroundImage: tempUser.BackgroundImage,
 		TotalFavorited:  tempUser.TotalFavorited,
-		WorkCount:       workCount,
+		WorkCount:       tempUser.WorkCount,
 		FavoriteCount:   tempUser.FavoriteCount,
 		IsFollow:        false,
 	}
@@ -131,6 +129,10 @@ func CreateVideo(hostID string, playURL, coverURL, title string) error {
 		Title:         title,
 	}
 	err = dao.CreateVideo(&tempVideo)
+	if err != nil {
+		return err
+	}
+	err = dao.AddUserWorkCount(userID)
 	if err != nil {
 		return err
 	}

@@ -24,6 +24,9 @@ func FavoriteActionService(hostID, videoID, actionType string) error {
 			return common.ErrorAlreadyLiked
 		} else {
 			_ = dao.CreateFavorite(&tempFavorite)
+			_ = dao.AddVideoFavoriteCount(videoIDInt, 1)
+			_ = dao.AddUserFavoriteCount(hostIDInt, 1)
+			_ = dao.AddUserTotalFavorited(videoIDInt, 1)
 		}
 	} else if actionType == "2" {
 		// cancel like
@@ -32,6 +35,9 @@ func FavoriteActionService(hostID, videoID, actionType string) error {
 			return common.ErrorNotLiked
 		} else {
 			_ = dao.DeleteFavorite(&tempFavorite)
+			_ = dao.AddVideoFavoriteCount(videoIDInt, -1)
+			_ = dao.AddUserFavoriteCount(hostIDInt, -1)
+			_ = dao.AddUserTotalFavorited(videoIDInt, -1)
 		}
 	} else {
 		return common.ErrorWrongArgument
@@ -82,11 +88,8 @@ func FavoriteListService(hostID, guestID string) ([]VideoResponse, error) {
 		tempUser.BackgroundImage = user.BackgroundImage
 		tempUser.Signature = user.Signature
 		tempUser.TotalFavorited = user.TotalFavorited
+		tempUser.WorkCount = user.WorkCount
 		tempUser.FavoriteCount = user.FavoriteCount
-
-		var workCount int64
-		_ = dao.GetVideoNumByUserID(guestIDInt, &workCount)
-		tempUser.WorkCount = workCount
 
 		tempUser.IsFollow = IsFollow(hostID, guestID)
 
