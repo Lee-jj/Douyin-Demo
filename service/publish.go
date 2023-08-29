@@ -17,13 +17,11 @@ import (
 )
 
 func PublishListService(hostID, guestID string) ([]VideoResponse, error) {
-	guestIDInt, err := strconv.ParseInt(guestID, 10, 64)
-	if err != nil {
-		return nil, err
-	}
+	guestIDInt, _ := strconv.ParseInt(guestID, 10, 64)
+	// hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
 
 	tempUser := model.User{}
-	err = dao.GetUserByID(guestIDInt, &tempUser)
+	err := dao.GetUserByID(guestIDInt, &tempUser)
 	if err != nil {
 		return nil, err
 	}
@@ -65,6 +63,10 @@ func PublishListService(hostID, guestID string) ([]VideoResponse, error) {
 		tempVideo.Title = video.Title
 		// For now, let's assume that the host user doesn't like any video
 		tempVideo.IsFavorite = false
+		var tempFavorite model.Favorite
+		if err := dao.GetFavorite(guestIDInt, video.ID, &tempFavorite); err == nil {
+			tempVideo.IsFavorite = true
+		}
 
 		feedVideoResponse = append(feedVideoResponse, tempVideo)
 	}

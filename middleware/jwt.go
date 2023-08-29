@@ -13,7 +13,7 @@ import (
 var SecretKey = []byte("this is a jwt-go key")
 
 type Claims struct {
-	UserID   int64 `json:"user_id"`
+	UserID   int64
 	userName string
 	jwt.StandardClaims
 }

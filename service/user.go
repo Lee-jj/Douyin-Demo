@@ -15,20 +15,6 @@ const (
 	MinPasswordLen = 6
 )
 
-// type UserInfoObjectResponse struct {
-// 	UserID          int64  `json:"id"`
-// 	UserName        string `json:"name"`
-// 	FollowCount     int64  `json:"follow_count"`   // 关注数
-// 	FollowerCount   int64  `json:"follower_count"` // 被关注数
-// 	IsFollowe       bool   `json:"is_follow"`
-// 	Avatar          string `json:"avatar"` // 头像
-// 	BackgroundImage string `json:"background_image"`
-// 	Signature       string `json:"signature"`
-// 	TotalFavorited  int64  `json:"total_favorited"` // 总被点赞数
-// 	WorkCount       int64  `json:"work_count"`
-// 	FavoriteCount   int64  `json:"favorite_count"` // 点赞数
-// }
-
 type TokenResponse struct {
 	UserID int64  `json:"user_id"`
 	Token  string `json:"token"`

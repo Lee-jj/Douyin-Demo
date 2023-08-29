@@ -102,7 +102,11 @@ func FeedService(token string, videoList []model.Video) ([]VideoResponse, int64)
 			// token not expired
 			if err1 == nil && time.Now().Unix() <= tokenClaims.ExpiresAt {
 				// For now, let's assume that the host user doesn't like any video
-				tempVideo.IsFavorite = false
+				// tempVideo.IsFavorite = false
+				var tempFavorite model.Favorite
+				if err := dao.GetFavorite(tokenClaims.UserID, video.ID, &tempFavorite); err == nil {
+					tempVideo.IsFavorite = true
+				}
 			}
 		}
 

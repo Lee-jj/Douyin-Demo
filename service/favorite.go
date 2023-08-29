@@ -39,3 +39,61 @@ func FavoriteActionService(hostID, videoID, actionType string) error {
 
 	return nil
 }
+
+func FavoriteListService(hostID, guestID string) ([]VideoResponse, error) {
+	guestIDInt, _ := strconv.ParseInt(guestID, 10, 64)
+
+	var tempFavorite []model.Favorite
+	err := dao.GetFavoriteVideoByUserID(guestIDInt, &tempFavorite)
+	if err != nil {
+		return []VideoResponse{}, nil
+	}
+
+	var videoListResponse []VideoResponse
+	for _, favorite := range tempFavorite {
+		var tempVideoResponse VideoResponse
+
+		videoID := favorite.VideoID
+		var video model.Video
+		err := dao.GetVideoByVideoID(videoID, &video)
+		if err != nil {
+			continue
+		}
+
+		tempVideoResponse.ID = video.ID
+		tempVideoResponse.PlayUrl = video.PlayUrl
+		tempVideoResponse.CoverUrl = video.CoverUrl
+		tempVideoResponse.FavoriteCount = video.FavoriteCount
+		tempVideoResponse.IsFavorite = true
+		tempVideoResponse.Title = video.Title
+
+		var tempUser UserInfoResponse
+		var user model.User
+		err = dao.GetUserByID(video.AuthorID, &user)
+		if err != nil {
+			continue
+		}
+
+		tempUser.UserID = user.ID
+		tempUser.UserName = user.Name
+		tempUser.FollowCount = user.FollowCount
+		tempUser.FollowerCount = user.FollowerCount
+		tempUser.Avatar = user.Avatar
+		tempUser.BackgroundImage = user.BackgroundImage
+		tempUser.Signature = user.Signature
+		tempUser.TotalFavorited = user.TotalFavorited
+		tempUser.FavoriteCount = user.FavoriteCount
+
+		var workCount int64
+		_ = dao.GetVideoNumByUserID(guestIDInt, &workCount)
+		tempUser.WorkCount = workCount
+
+		tempUser.IsFollow = IsFollow(hostID, guestID)
+
+		tempVideoResponse.Author = tempUser
+
+		videoListResponse = append(videoListResponse, tempVideoResponse)
+	}
+
+	return videoListResponse, nil
+}
