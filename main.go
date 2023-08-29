@@ -14,7 +14,7 @@ func main() {
 	r := gin.Default()
 
 	dao.InitMySQL()
-	dao.DB.AutoMigrate(&model.User{}, &model.Video{}, &model.Favorite{})
+	dao.DB.AutoMigrate(&model.User{}, &model.Video{}, &model.Favorite{}, &model.Comment{})
 
 	router.InitRouter(r)
 
