@@ -27,4 +27,5 @@ var (
 	ErrorWrongArgument    = errors.New("错误参数")
 	ErrorAlreadyLiked     = errors.New("点赞失败，已经点赞过该视频了")
 	ErrorNotLiked         = errors.New("取消失败，没有点赞过该视频")
+	ErrorEncrypteFaild    = errors.New("密码加密失败")
 )

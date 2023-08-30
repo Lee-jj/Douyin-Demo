@@ -7,6 +7,8 @@ import (
 	"DOUYIN-DEMO/model"
 	"fmt"
 	"strconv"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -73,7 +75,8 @@ func UserLoginService(username, password string) (TokenResponse, error) {
 	}
 
 	// password wrong
-	if password != login.Password {
+	// Passwords obtained from the database are decrypted first
+	if PasswordIsRight(password, login.Password) {
 		return tokenResponse, common.ErrorPasswordWrong
 	}
 
@@ -133,16 +136,22 @@ func isUserValid(userName, passWord string) error {
 }
 
 func CreateRegisterUser(username, password string) (model.User, error) {
+	// Passwords are encrypted before they are placed in the database.
+	hashPassword, err := Encryption(password)
+	if err != nil {
+		return model.User{}, err
+	}
+
 	newUser := model.User{
 		Name:            username,
-		Password:        password,
+		Password:        hashPassword,
 		Avatar:          "http://192.168.31.246:8080/static/defaultAvatar.jpg",
 		BackgroundImage: "http://192.168.31.246:8080/static/defaultBackground.jpg",
 		Signature:       "I have nothing to say",
 	}
 
 	var tempUser model.User
-	err := dao.GetUserByName(username, &tempUser)
+	err = dao.GetUserByName(username, &tempUser)
 	if err == nil {
 		return newUser, common.ErrorUserExist
 	}
@@ -154,4 +163,21 @@ func CreateRegisterUser(username, password string) (model.User, error) {
 
 	fmt.Printf("create a new user named %v\n", newUser.Name)
 	return newUser, nil
+}
+
+func Encryption(password string) (string, error) {
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	if err != nil {
+		return "", common.ErrorEncrypteFaild
+	}
+
+	return string(hashPassword), nil
+}
+
+func PasswordIsRight(password, hashPassword string) bool {
+	// Decryption
+	bytePwd := []byte(password)
+	byteHash := []byte(hashPassword)
+	err := bcrypt.CompareHashAndPassword(byteHash, bytePwd)
+	return err == nil
 }
