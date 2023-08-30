@@ -76,7 +76,7 @@ func UserLoginService(username, password string) (TokenResponse, error) {
 
 	// password wrong
 	// Passwords obtained from the database are decrypted first
-	if PasswordIsRight(password, login.Password) {
+	if !PasswordIsRight(password, login.Password) {
 		return tokenResponse, common.ErrorPasswordWrong
 	}
 
