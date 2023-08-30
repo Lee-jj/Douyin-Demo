@@ -3,7 +3,9 @@ package controller
 import (
 	"DOUYIN-DEMO/common"
 	"DOUYIN-DEMO/model"
+	"DOUYIN-DEMO/service"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,13 +17,24 @@ type UserListResponse struct {
 
 // RelationAction no practical effect, just check if token is valid
 func RelationAction(c *gin.Context) {
-	token := c.Query("token")
+	hostIDAny, _ := c.Get("host_id")
+	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
+	toUserID := c.Query("to_user_id")
+	actionType := c.Query("action_type")
 
-	if _, exist := usersLoginInfo[token]; exist {
-		c.JSON(http.StatusOK, common.Response{StatusCode: 0})
-	} else {
-		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+	err := service.RelationActionService(hostID, toUserID, actionType)
+	if err != nil {
+		c.JSON(http.StatusOK, common.Response{
+			StatusCode: 1,
+			StatusMsg:  err.Error(),
+		})
+		return
 	}
+
+	c.JSON(http.StatusOK, common.Response{
+		StatusCode: 0,
+		StatusMsg:  "关注/取消关注 成功",
+	})
 }
 
 // FollowList all users have same follow list

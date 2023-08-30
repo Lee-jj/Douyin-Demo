@@ -69,3 +69,13 @@ func AddUserTotalFavorited(videoID, addNum int64) error {
 	err = DB.Model(&model.User{}).Where("user_id = ?", video.AuthorID).Update("total_favorited", gorm.Expr("total_favorited + ?", addNum)).Error
 	return err
 }
+
+func AddFollowCount(hostID, addNum int64) error {
+	err := DB.Model(&model.User{}).Where("user_id = ?", hostID).Update("follow_count", gorm.Expr("follow_count + ?", addNum)).Error
+	return err
+}
+
+func AddFollowerCount(toUserID, addNum int64) error {
+	err := DB.Model(&model.User{}).Where("user_id = ?", toUserID).Update("follower_count", gorm.Expr("follower_count + ?", addNum)).Error
+	return err
+}

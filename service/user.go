@@ -54,8 +54,14 @@ func UserInfoService(hostID, guestID string) (UserInfoResponse, error) {
 }
 
 func IsFollow(hostID, guestID string) bool {
-	// For now, let's assume that the host user follows all users except himself
-	return hostID != guestID
+	// search table relation to find the record or not
+	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
+	guestIDInt, _ := strconv.ParseInt(guestID, 10, 64)
+
+	var tempRelation model.Relation
+	err := dao.GetRelation(hostIDInt, guestIDInt, &tempRelation)
+
+	return err == nil
 }
 
 func UserLoginService(username, password string) (TokenResponse, error) {

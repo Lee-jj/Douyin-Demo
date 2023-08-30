@@ -28,4 +28,6 @@ var (
 	ErrorAlreadyLiked     = errors.New("点赞失败，已经点赞过该视频了")
 	ErrorNotLiked         = errors.New("取消失败，没有点赞过该视频")
 	ErrorEncrypteFaild    = errors.New("密码加密失败")
+	ErrorAlreadyFollowed  = errors.New("关注失败，已经关注过该用户了")
+	ErrorNotFollowed      = errors.New("取消失败，没有关注过该用户")
 )
