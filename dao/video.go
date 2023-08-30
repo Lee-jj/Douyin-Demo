@@ -30,12 +30,12 @@ func CreateVideo(tempVideo *model.Video) error {
 	return nil
 }
 
-func GetFavoriteVideoByUserID(guestID int64, favoriteList *[]model.Favorite) error {
-	err := DB.Model(&model.Favorite{}).Where("user_id = ?", guestID).Find(favoriteList).Error
+func AddVideoFavoriteCount(videoID, addNum int64) error {
+	err := DB.Model(&model.Video{}).Where("video_id = ?", videoID).Update("favorite_count", gorm.Expr("favorite_count + ?", addNum)).Error
 	return err
 }
 
-func AddVideoFavoriteCount(videoID, addNum int64) error {
-	err := DB.Model(&model.Video{}).Where("video_id = ?", videoID).Update("favorite_count", gorm.Expr("favorite_count + ?", addNum)).Error
+func AddVideoCommentCount(videoID, addNum int64) error {
+	err := DB.Model(&model.Video{}).Where("video_id = ?", videoID).Update("comment_count", gorm.Expr("comment_count + ?", addNum)).Error
 	return err
 }

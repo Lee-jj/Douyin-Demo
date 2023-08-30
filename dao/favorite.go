@@ -16,3 +16,8 @@ func DeleteFavorite(tempFavorite *model.Favorite) error {
 	err := DB.Model(&model.Favorite{}).Delete(tempFavorite).Error
 	return err
 }
+
+func GetFavoriteVideoByUserID(guestID int64, favoriteList *[]model.Favorite) error {
+	err := DB.Model(&model.Favorite{}).Where("user_id = ?", guestID).Find(favoriteList).Error
+	return err
+}

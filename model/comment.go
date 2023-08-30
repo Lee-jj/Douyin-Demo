@@ -6,5 +6,5 @@ type Comment struct {
 	UserID   int64  `gorm:"column:user_id"`
 	VideoID  int64  `gorm:"column:video_id"`
 	Content  string `gorm:"column:content"`
-	CreateAt string `gorm:"column:create_date"`
+	CreateAt string `gorm:"column:create_date"` // mm-dd
 }
