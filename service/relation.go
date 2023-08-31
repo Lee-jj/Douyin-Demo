@@ -7,6 +7,12 @@ import (
 	"strconv"
 )
 
+type FriendUser struct {
+	UserInfoResponse
+	Message string `json:"message,omitempty"`
+	MsgType int64  `json:"msgType,omitempty"`
+}
+
 func RelationActionService(hostID, toUserID, actionType string) error {
 	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
 	toUserIDInt, _ := strconv.ParseInt(toUserID, 10, 64)
@@ -120,4 +126,35 @@ func RelationFollowerListService(hostID, geustID string) ([]UserInfoResponse, er
 	}
 
 	return userList, nil
+}
+
+func RelationFriendListService(hostID, geustID string) ([]FriendUser, error) {
+	// You can only talk to your own fans
+	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
+
+	userList, _ := RelationFollowerListService(hostID, geustID)
+
+	var friendUserList []FriendUser
+	for _, user := range userList {
+		var tempFriendUser FriendUser
+
+		tempFriendUser.UserInfoResponse = user
+
+		var message model.Message
+		err := dao.GetNewestMessage(hostIDInt, user.UserID, &message)
+		if err == nil {
+			tempFriendUser.Message = message.Content
+			if message.FromUserID == hostIDInt {
+				tempFriendUser.MsgType = 1
+			} else if message.ToUserID == hostIDInt {
+				tempFriendUser.MsgType = 0
+			} else {
+				continue
+			}
+		}
+
+		friendUserList = append(friendUserList, tempFriendUser)
+	}
+
+	return friendUserList, nil
 }

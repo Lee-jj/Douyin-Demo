@@ -3,6 +3,7 @@ package controller
 import (
 	"DOUYIN-DEMO/common"
 	"DOUYIN-DEMO/service"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -12,6 +13,11 @@ import (
 type UserListResponse struct {
 	common.Response
 	UserList []service.UserInfoResponse `json:"user_list"`
+}
+
+type FriendListResponse struct {
+	common.Response
+	FriendUserList []service.FriendUser `json:"user_list"`
 }
 
 // RelationAction no practical effect, just check if token is valid
@@ -100,5 +106,30 @@ func FollowerList(c *gin.Context) {
 
 // FriendList all users have same friend list
 func FriendList(c *gin.Context) {
+	hostIDAny, _ := c.Get("host_id")
+	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
+	geustID := c.Query("user_id")
 
+	// Logically, hostID and geustID are the same and both indicate the current login user
+	fmt.Printf("hostID: %v, geustID: %v\n", hostID, geustID)
+
+	friendUserList, _ := service.RelationFriendListService(hostID, geustID)
+
+	if len(friendUserList) == 0 {
+		c.JSON(http.StatusOK, FriendListResponse{
+			Response: common.Response{
+				StatusCode: 0,
+				StatusMsg:  "用户粉丝列表为空",
+			},
+			FriendUserList: nil,
+		})
+	} else {
+		c.JSON(http.StatusOK, FriendListResponse{
+			Response: common.Response{
+				StatusCode: 0,
+				StatusMsg:  "get friend list success.",
+			},
+			FriendUserList: friendUserList,
+		})
+	}
 }
