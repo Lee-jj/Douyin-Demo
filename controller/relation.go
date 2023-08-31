@@ -22,6 +22,14 @@ func RelationAction(c *gin.Context) {
 	toUserID := c.Query("to_user_id")
 	actionType := c.Query("action_type")
 
+	if hostID == toUserID {
+		c.JSON(http.StatusOK, common.Response{
+			StatusCode: 1,
+			StatusMsg:  "自己不能关注自己",
+		})
+		return
+	}
+
 	err := service.RelationActionService(hostID, toUserID, actionType)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{
