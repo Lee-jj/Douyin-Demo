@@ -129,31 +129,55 @@ func RelationFollowerListService(hostID, geustID string) ([]UserInfoResponse, er
 }
 
 func RelationFriendListService(hostID, geustID string) ([]FriendUser, error) {
-	// You can only talk to your own fans
+	// You can only send messages if you follow each other
 	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
 
-	userList, _ := RelationFollowerListService(hostID, geustID)
+	var tempRelationList []model.Relation
+	err := dao.GetFollowList(hostIDInt, &tempRelationList)
+	if err != nil {
+		return []FriendUser{}, nil
+	}
 
 	var friendUserList []FriendUser
-	for _, user := range userList {
-		var tempFriendUser FriendUser
+	for _, relation := range tempRelationList {
+		var friendUser FriendUser
 
-		tempFriendUser.UserInfoResponse = user
+		var tempRelation model.Relation
+		err := dao.GetRelation(relation.ToUserID, hostIDInt, &tempRelation)
+		if err != nil {
+			continue
+		}
+
+		var user model.User
+		err = dao.GetUserByID(relation.ToUserID, &user)
+		if err != nil {
+			continue
+		}
+
+		friendUser.UserID = user.ID
+		friendUser.UserName = user.Name
+		friendUser.FollowCount = user.FollowCount
+		friendUser.FollowerCount = user.FollowerCount
+		friendUser.IsFollow = true
+		friendUser.Avatar = user.Avatar
+		friendUser.BackgroundImage = user.BackgroundImage
+		friendUser.Signature = user.Signature
+		friendUser.TotalFavorited = user.TotalFavorited
+		friendUser.WorkCount = user.WorkCount
+		friendUser.FavoriteCount = user.FavoriteCount
 
 		var message model.Message
-		err := dao.GetNewestMessage(hostIDInt, user.UserID, &message)
+		err = dao.GetNewestMessage(hostIDInt, user.ID, &message)
 		if err == nil {
-			tempFriendUser.Message = message.Content
+			friendUser.Message = message.Content
 			if message.FromUserID == hostIDInt {
-				tempFriendUser.MsgType = 1
-			} else if message.ToUserID == hostIDInt {
-				tempFriendUser.MsgType = 0
+				friendUser.MsgType = 1
 			} else {
-				continue
+				friendUser.MsgType = 0
 			}
 		}
 
-		friendUserList = append(friendUserList, tempFriendUser)
+		friendUserList = append(friendUserList, friendUser)
 	}
 
 	return friendUserList, nil
