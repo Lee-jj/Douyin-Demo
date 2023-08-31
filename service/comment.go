@@ -80,6 +80,7 @@ func CommentActionServiceDelete(videoID, commentID string) error {
 }
 
 func CommentListService(hostID, videoID string) ([]CommentResponse, error) {
+	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
 	videoIDInt, _ := strconv.ParseInt(videoID, 10, 64)
 
 	var commentList []model.Comment
@@ -107,6 +108,7 @@ func CommentListService(hostID, videoID string) ([]CommentResponse, error) {
 			UserName:        user.Name,
 			FollowCount:     user.FollowCount,
 			FollowerCount:   user.FollowerCount,
+			IsFollow:        IsFollow(hostIDInt, user.ID),
 			Avatar:          user.Avatar,
 			BackgroundImage: user.BackgroundImage,
 			Signature:       user.Signature,
@@ -114,7 +116,6 @@ func CommentListService(hostID, videoID string) ([]CommentResponse, error) {
 			WorkCount:       user.WorkCount,
 			FavoriteCount:   user.FavoriteCount,
 		}
-		tempUser.IsFollow = IsFollow(hostID, strconv.FormatInt(user.ID, 10))
 
 		tempComment.User = tempUser
 

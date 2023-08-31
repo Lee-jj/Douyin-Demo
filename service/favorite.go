@@ -47,6 +47,7 @@ func FavoriteActionService(hostID, videoID, actionType string) error {
 }
 
 func FavoriteListService(hostID, guestID string) ([]VideoResponse, error) {
+	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
 	guestIDInt, _ := strconv.ParseInt(guestID, 10, 64)
 
 	var tempFavorite []model.Favorite
@@ -84,14 +85,13 @@ func FavoriteListService(hostID, guestID string) ([]VideoResponse, error) {
 		tempUser.UserName = user.Name
 		tempUser.FollowCount = user.FollowCount
 		tempUser.FollowerCount = user.FollowerCount
+		tempUser.IsFollow = IsFollow(hostIDInt, guestIDInt)
 		tempUser.Avatar = user.Avatar
 		tempUser.BackgroundImage = user.BackgroundImage
 		tempUser.Signature = user.Signature
 		tempUser.TotalFavorited = user.TotalFavorited
 		tempUser.WorkCount = user.WorkCount
 		tempUser.FavoriteCount = user.FavoriteCount
-
-		tempUser.IsFollow = IsFollow(hostID, guestID)
 
 		tempVideoResponse.Author = tempUser
 

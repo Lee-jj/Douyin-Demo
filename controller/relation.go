@@ -2,7 +2,6 @@ package controller
 
 import (
 	"DOUYIN-DEMO/common"
-	"DOUYIN-DEMO/model"
 	"DOUYIN-DEMO/service"
 	"net/http"
 	"strconv"
@@ -12,7 +11,7 @@ import (
 
 type UserListResponse struct {
 	common.Response
-	UserList []model.User `json:"user_list"`
+	UserList []service.UserInfoResponse `json:"user_list"`
 }
 
 // RelationAction no practical effect, just check if token is valid
@@ -47,30 +46,59 @@ func RelationAction(c *gin.Context) {
 
 // FollowList all users have same follow list
 func FollowList(c *gin.Context) {
-	c.JSON(http.StatusOK, UserListResponse{
-		Response: common.Response{
-			StatusCode: 0,
-		},
-		UserList: []model.User{DemoUser},
-	})
+	hostIDAny, _ := c.Get("host_id")
+	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
+	UserID := c.Query("user_id")
+
+	userList, _ := service.RelationFollowListService(hostID, UserID)
+
+	if len(userList) == 0 {
+		c.JSON(http.StatusOK, UserListResponse{
+			Response: common.Response{
+				StatusCode: 0,
+				StatusMsg:  "用户关注列表为空",
+			},
+			UserList: nil,
+		})
+	} else {
+		c.JSON(http.StatusOK, UserListResponse{
+			Response: common.Response{
+				StatusCode: 0,
+				StatusMsg:  "get follow list success.",
+			},
+			UserList: userList,
+		})
+	}
 }
 
 // FollowerList all users have same follower list
 func FollowerList(c *gin.Context) {
-	c.JSON(http.StatusOK, UserListResponse{
-		Response: common.Response{
-			StatusCode: 0,
-		},
-		UserList: []model.User{DemoUser},
-	})
+	hostIDAny, _ := c.Get("host_id")
+	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
+	UserID := c.Query("user_id")
+
+	userList, _ := service.RelationFollowerListService(hostID, UserID)
+
+	if len(userList) == 0 {
+		c.JSON(http.StatusOK, UserListResponse{
+			Response: common.Response{
+				StatusCode: 0,
+				StatusMsg:  "用户粉丝列表为空",
+			},
+			UserList: nil,
+		})
+	} else {
+		c.JSON(http.StatusOK, UserListResponse{
+			Response: common.Response{
+				StatusCode: 0,
+				StatusMsg:  "get follower list success.",
+			},
+			UserList: userList,
+		})
+	}
 }
 
 // FriendList all users have same friend list
 func FriendList(c *gin.Context) {
-	c.JSON(http.StatusOK, UserListResponse{
-		Response: common.Response{
-			StatusCode: 0,
-		},
-		UserList: []model.User{DemoUser},
-	})
+
 }

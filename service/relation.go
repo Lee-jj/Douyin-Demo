@@ -43,3 +43,81 @@ func RelationActionService(hostID, toUserID, actionType string) error {
 
 	return nil
 }
+
+func RelationFollowListService(hostID, geustID string) ([]UserInfoResponse, error) {
+	// geustID as host_id in relations table
+	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
+	geustIDInt, _ := strconv.ParseInt(geustID, 10, 64)
+
+	var tempRelationList []model.Relation
+	err := dao.GetFollowList(geustIDInt, &tempRelationList)
+	if err != nil {
+		return []UserInfoResponse{}, nil
+	}
+
+	var userList []UserInfoResponse
+	for _, relation := range tempRelationList {
+		var user UserInfoResponse
+
+		var tempUser model.User
+		err := dao.GetUserByID(relation.ToUserID, &tempUser)
+		if err != nil {
+			continue
+		}
+
+		user.UserID = tempUser.ID
+		user.UserName = tempUser.Name
+		user.FollowCount = tempUser.FollowCount
+		user.FollowerCount = tempUser.FollowerCount
+		user.IsFollow = IsFollow(hostIDInt, tempUser.ID)
+		user.Avatar = tempUser.Avatar
+		user.BackgroundImage = tempUser.BackgroundImage
+		user.Signature = tempUser.Signature
+		user.TotalFavorited = tempUser.TotalFavorited
+		user.WorkCount = tempUser.WorkCount
+		user.FavoriteCount = tempUser.FavoriteCount
+
+		userList = append(userList, user)
+	}
+
+	return userList, nil
+}
+
+func RelationFollowerListService(hostID, geustID string) ([]UserInfoResponse, error) {
+	// geustID as to_user_id in relations table
+	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
+	geustIDInt, _ := strconv.ParseInt(geustID, 10, 64)
+
+	var tempRelationList []model.Relation
+	err := dao.GetFollowerList(geustIDInt, &tempRelationList)
+	if err != nil {
+		return []UserInfoResponse{}, nil
+	}
+
+	var userList []UserInfoResponse
+	for _, relation := range tempRelationList {
+		var user UserInfoResponse
+
+		var tempUser model.User
+		err := dao.GetUserByID(relation.HostID, &tempUser)
+		if err != nil {
+			continue
+		}
+
+		user.UserID = tempUser.ID
+		user.UserName = tempUser.Name
+		user.FollowCount = tempUser.FollowCount
+		user.FollowerCount = tempUser.FollowerCount
+		user.IsFollow = IsFollow(hostIDInt, tempUser.ID)
+		user.Avatar = tempUser.Avatar
+		user.BackgroundImage = tempUser.BackgroundImage
+		user.Signature = tempUser.Signature
+		user.TotalFavorited = tempUser.TotalFavorited
+		user.WorkCount = tempUser.WorkCount
+		user.FavoriteCount = tempUser.FavoriteCount
+
+		userList = append(userList, user)
+	}
+
+	return userList, nil
+}

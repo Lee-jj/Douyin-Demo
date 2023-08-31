@@ -25,6 +25,7 @@ type TokenResponse struct {
 func UserInfoService(hostID, guestID string) (UserInfoResponse, error) {
 	userInfoObjectResponse := UserInfoResponse{}
 
+	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
 	guestIDInt, err := strconv.ParseInt(guestID, 10, 64)
 	if err != nil {
 		return userInfoObjectResponse, err
@@ -41,25 +42,21 @@ func UserInfoService(hostID, guestID string) (UserInfoResponse, error) {
 		UserName:        user.Name,
 		FollowCount:     user.FollowCount,
 		FollowerCount:   user.FollowerCount,
-		IsFollow:        false,
+		IsFollow:        IsFollow(hostIDInt, guestIDInt),
 		Avatar:          user.Avatar,
 		BackgroundImage: user.BackgroundImage,
 		TotalFavorited:  user.TotalFavorited,
 		WorkCount:       user.WorkCount,
 		FavoriteCount:   user.FavoriteCount,
 	}
-	userInfoObjectResponse.IsFollow = IsFollow(hostID, guestID)
 
 	return userInfoObjectResponse, nil
 }
 
-func IsFollow(hostID, guestID string) bool {
+func IsFollow(hostID, guestID int64) bool {
 	// search table relation to find the record or not
-	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
-	guestIDInt, _ := strconv.ParseInt(guestID, 10, 64)
-
 	var tempRelation model.Relation
-	err := dao.GetRelation(hostIDInt, guestIDInt, &tempRelation)
+	err := dao.GetRelation(hostID, guestID, &tempRelation)
 
 	return err == nil
 }

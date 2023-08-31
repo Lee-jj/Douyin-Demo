@@ -16,3 +16,13 @@ func DeleteRelation(tempRelation *model.Relation) error {
 	err := DB.Model(&model.Relation{}).Delete(tempRelation).Error
 	return err
 }
+
+func GetFollowList(userID int64, tempRelationList *[]model.Relation) error {
+	err := DB.Model(&model.Relation{}).Where("host_id = ?", userID).Find(tempRelationList).Error
+	return err
+}
+
+func GetFollowerList(userID int64, tempRelaionList *[]model.Relation) error {
+	err := DB.Model(&model.Relation{}).Where("to_user_id = ?", userID).Find(tempRelaionList).Error
+	return err
+}

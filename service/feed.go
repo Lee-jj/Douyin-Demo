@@ -4,7 +4,6 @@ import (
 	"DOUYIN-DEMO/dao"
 	"DOUYIN-DEMO/middleware"
 	"DOUYIN-DEMO/model"
-	"strconv"
 	"time"
 )
 
@@ -80,7 +79,7 @@ func FeedService(token string, videoList []model.Video) ([]VideoResponse, int64)
 				tokenClaims, err1 := middleware.ParseToken(token)
 				// token not expired
 				if err1 == nil && time.Now().Unix() <= tokenClaims.ExpiresAt {
-					tempFeedUser.IsFollow = IsFollow(strconv.Itoa(int(tokenClaims.UserID)), strconv.Itoa(int(tempUser.ID)))
+					tempFeedUser.IsFollow = IsFollow(tokenClaims.UserID, tempUser.ID)
 				}
 			}
 		}

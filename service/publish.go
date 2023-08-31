@@ -18,7 +18,7 @@ import (
 
 func PublishListService(hostID, guestID string) ([]VideoResponse, error) {
 	guestIDInt, _ := strconv.ParseInt(guestID, 10, 64)
-	// hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
+	hostIDInt, _ := strconv.ParseInt(hostID, 10, 64)
 
 	tempUser := model.User{}
 	err := dao.GetUserByID(guestIDInt, &tempUser)
@@ -31,15 +31,13 @@ func PublishListService(hostID, guestID string) ([]VideoResponse, error) {
 		UserName:        tempUser.Name,
 		FollowCount:     tempUser.FollowCount,
 		FollowerCount:   tempUser.FollowerCount,
+		IsFollow:        IsFollow(hostIDInt, guestIDInt),
 		Avatar:          tempUser.Avatar,
 		BackgroundImage: tempUser.BackgroundImage,
 		TotalFavorited:  tempUser.TotalFavorited,
 		WorkCount:       tempUser.WorkCount,
 		FavoriteCount:   tempUser.FavoriteCount,
-		IsFollow:        false,
 	}
-
-	feedUserInfo.IsFollow = IsFollow(hostID, guestID)
 
 	videoList := []model.Video{}
 	feedVideoResponse := []VideoResponse{}
