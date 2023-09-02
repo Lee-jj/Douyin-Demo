@@ -13,6 +13,7 @@ func main() {
 
 	r := gin.Default()
 
+	dao.InitMinio()
 	dao.InitMySQL()
 	dao.DB.AutoMigrate(&model.User{}, &model.Video{}, &model.Favorite{}, &model.Comment{}, &model.Relation{}, &model.Message{})
 

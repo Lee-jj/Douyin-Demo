@@ -1,16 +1,13 @@
 package service
 
 import (
-	"DOUYIN-DEMO/common"
 	"DOUYIN-DEMO/dao"
 	"DOUYIN-DEMO/model"
 	"bytes"
 	"fmt"
-	"mime/multipart"
 	"os"
-	"path/filepath"
 	"strconv"
-	"time"
+	"strings"
 
 	"github.com/disintegration/imaging"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
@@ -57,7 +54,6 @@ func PublishListService(hostID, guestID string) ([]VideoResponse, error) {
 		tempVideo.FavoriteCount = video.FavoriteCount
 		tempVideo.CommentCount = video.CommentCount
 		tempVideo.Title = video.Title
-		// For now, let's assume that the host user doesn't like any video
 		tempVideo.IsFavorite = false
 		var tempFavorite model.Favorite
 		if err := dao.GetFavorite(guestIDInt, video.ID, &tempFavorite); err == nil {
@@ -70,23 +66,7 @@ func PublishListService(hostID, guestID string) ([]VideoResponse, error) {
 	return feedVideoResponse, nil
 }
 
-func GetPlayURL(hostID, title string, file *multipart.FileHeader) (string, error) {
-	if title == "" {
-		return "", common.ErrorHasNoTitle
-	}
-
-	// video path
-	originName := filepath.Base(file.Filename)
-	fileName := fmt.Sprintf("%s_%d_%s", hostID, time.Now().Unix(), originName)
-	// filePath := filepath.Join("/static", fileName)
-	return fileName, nil
-
-}
-
-func GetCoverURL(videoName, imageName string, frameNum int) error {
-	videoPath := filepath.Join("./public", videoName)
-	imagePath := filepath.Join("./public", imageName)
-
+func getCover(videoPath, imagePath string, frameNum int) error {
 	fmt.Printf("videoPath: %v", videoPath)
 
 	buf := bytes.NewBuffer(nil)
@@ -112,7 +92,7 @@ func GetCoverURL(videoName, imageName string, frameNum int) error {
 	return nil
 }
 
-func CreateVideo(hostID string, playURL, coverURL, title string) error {
+func createVideo(hostID string, playURL, coverURL, title string) error {
 	userID, err := strconv.ParseInt(hostID, 10, 64)
 	if err != nil {
 		return err
@@ -133,6 +113,42 @@ func CreateVideo(hostID string, playURL, coverURL, title string) error {
 	err = dao.AddUserWorkCount(userID)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func PublishService(userID, videoPath, title string) error {
+	client := dao.GetMinio()
+	playURL, err := client.UpLoadFile("video", videoPath, userID)
+	if err != nil {
+		return err
+	}
+
+	imagePath := strings.Replace(videoPath, ".mp4", ".jpg", 1)
+	err = getCover(videoPath, imagePath, 1)
+	if err != nil {
+		return err
+	}
+
+	coverURL, err := client.UpLoadFile("image", imagePath, userID)
+	if err != nil {
+		return err
+	}
+
+	err = createVideo(userID, playURL, coverURL, title)
+	if err != nil {
+		return err
+	}
+
+	// delete the temp video and image
+	err = os.Remove(videoPath)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	err = os.Remove(imagePath)
+	if err != nil {
+		fmt.Println(err.Error())
 	}
 
 	return nil

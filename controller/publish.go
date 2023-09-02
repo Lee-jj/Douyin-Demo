@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,16 +30,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	videoName, err := service.GetPlayURL(hostID, title, file)
-	if err != nil {
-		c.JSON(http.StatusOK, common.Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		})
-		return
-	}
-
-	videoPath := filepath.Join("./public", videoName)
+	videoPath := filepath.Join("./public", filepath.Base(file.Filename))
 	if err = c.SaveUploadedFile(file, videoPath); err != nil {
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 1,
@@ -49,19 +39,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	coverName := strings.Replace(videoName, ".mp4", ".jpeg", 1)
-	err = service.GetCoverURL(videoName, coverName, 1)
-	if err != nil {
-		c.JSON(http.StatusOK, common.Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		})
-		return
-	}
-
-	playURL := "http://192.168.31.246:8080/static/" + videoName
-	coverURL := "http://192.168.31.246:8080/static/" + coverName
-	err = service.CreateVideo(hostID, playURL, coverURL, title)
+	err = service.PublishService(hostID, videoPath, title)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 1,
@@ -72,7 +50,7 @@ func Publish(c *gin.Context) {
 
 	c.JSON(http.StatusOK, common.Response{
 		StatusCode: 0,
-		StatusMsg:  videoName + " uploaded successfully",
+		StatusMsg:  "uploaded successfully",
 	})
 }
 

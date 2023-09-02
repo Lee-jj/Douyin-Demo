@@ -3,6 +3,7 @@ package dao
 import (
 	"DOUYIN-DEMO/common"
 	"fmt"
+	"log"
 
 	"gopkg.in/ini.v1"
 	"gorm.io/driver/mysql"
@@ -32,7 +33,7 @@ func InitMySQL() {
 
 	DB, DBError = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if DBError != nil {
-		panic(DBError)
+		log.Fatal(DBError)
 	}
 
 	// fmt.Println(database)
