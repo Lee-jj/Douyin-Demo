@@ -1,4 +1,4 @@
-# simple-demo
+# Douyin-Demo
 
 ## 抖音项目服务端简单示例
 
@@ -32,3 +32,8 @@ test 目录下为不同场景的功能测试case，可用于验证功能实现�
 2. 发布完新的视频后，返回到 publish/list 页面 workCount 数据不更新，需要退出登录以后再重新登录才可以，但是从feed点击视频发布者头像查看workCount没问题；同样的路由给POSTman发送，得到的是正确的workCount
 3. (模糊)feed 页面，[官网描述](https://bytedance.feishu.cn/docx/BhEgdmoI3ozdBJxly71cd30vnRc) latest_time 为最新时间戳，而 next_time 为返回视频中发布时间最早的，next_time 作为下次请求的 latest_time，是不是矛盾？
 4. 消息页面不显示历史聊天记录，使用Postman测试可以正常返回聊天记录列表
+
+### 后续改进
+1. 进行测试
+2. 上redis
+3. docker部署
