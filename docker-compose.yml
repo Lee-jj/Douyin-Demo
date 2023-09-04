@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  mysql:
+    image: 'mysql:latest'
+    ports: 
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=douyin
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=mysql123
+      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+  minio:
+    image: 'minio/minio:latest'
+    ports:
+      - 9000:9000
+    volumes:
+      - "/data/minio:/data/minio"
+    command: "server /data/minio"
+  douyindemo:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./wait-for.sh:/apps/wait-for.sh
+    depends_on:
+      - mysql
+      - minio
+    command: ["./wait-for.sh", "mysql:3306", "--", "/apps/Douyin-Demo"]
