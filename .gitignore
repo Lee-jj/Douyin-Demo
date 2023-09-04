@@ -24,4 +24,4 @@ go.work
 
 .idea
 
-*.ini
+# *.ini
