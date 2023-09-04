@@ -4,15 +4,17 @@
 
 具体功能内容参考飞书说明文档
 
-工程无其他依赖，直接编译运行即可
+需要连接MySQL以及Minio以读取用户数据和视频文件
+
+运行
 
 ```shell
-go build && ./simple-demo
+go build && ./Douyin-Demo
 ```
 
 ### 功能说明
 
-fresh 直接运行
+可用fresh 直接运行
 
 * 用户登录数据保存在mysql数据库中
 * 默认头像与背景保存到本地 public 目录中，访问时用 127.0.0.1:8080/static/image_name 即可
