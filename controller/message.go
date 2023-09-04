@@ -52,9 +52,9 @@ func MessageChat(c *gin.Context) {
 	hostIDAny, _ := c.Get("host_id")
 	hostID := strconv.FormatInt(hostIDAny.(int64), 10)
 	geustID := c.Query("to_user_id")
-	// preMsgTime := c.Query("pre_msg_time")
+	preMsgTime := c.Query("pre_msg_time")
 
-	messageList, _ := service.MessageListService(hostID, geustID)
+	messageList, _ := service.MessageListService(hostID, geustID, preMsgTime)
 
 	if len(messageList) == 0 {
 		c.JSON(http.StatusOK, ChatResponse{

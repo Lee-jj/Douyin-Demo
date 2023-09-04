@@ -32,8 +32,8 @@ test 目录下为不同场景的功能测试case，可用于验证功能实现�
 ### 当前问题
 1. (已解决)视频发布列表：POST给的 user_id 一直为0 （原因：json标签没有和接口文件的对应，导致解析失败）
 2. 发布完新的视频后，返回到 publish/list 页面 workCount 数据不更新，需要退出登录以后再重新登录才可以，但是从feed点击视频发布者头像查看workCount没问题；同样的路由给POSTman发送，得到的是正确的workCount
-3. (模糊)feed 页面，[官网描述](https://bytedance.feishu.cn/docx/BhEgdmoI3ozdBJxly71cd30vnRc) latest_time 为最新时间戳，而 next_time 为返回视频中发布时间最早的，next_time 作为下次请求的 latest_time，是不是矛盾？
-4. 消息页面不显示历史聊天记录，使用Postman测试可以正常返回聊天记录列表；【可能原因：1. 目前返回的是string类型，可能应该返回int类型？2. msgType还是msg_type】
+3. (模糊)feed 页面，[官网描述](https://bytedance.feishu.cn/docx/BhEgdmoI3ozdBJxly71cd30vnRc) latest_time 为最新时间戳，而 next_time 为返回视频中发布时间最早的，next_time 作为下次请求的 latest_time，描述矛盾
+4. (半解决)消息页面一直在刷新，请求的GET中pre_msg_time作用令人疑惑;**由于页面一直在刷新，而且读取的消息记录列表中的最后一条记录的创建时间被设定为新的请求的pre_msg_time，因此，我们在查找sql中的聊天记录时只返回最早发出的消息，随着客户端的循环请求，逐步按照时间显示出所有的聊天记录，这样得到的聊天记录页面比较符合我们对于聊天功能的认知**
 
 ### 后续改进
 1. 进行测试

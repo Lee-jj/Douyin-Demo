@@ -7,8 +7,8 @@ func CreateMessage(tempMessage *model.Message) error {
 	return err
 }
 
-func GetMessageList(fromUserID, toUserID int64, messageList *[]model.Message) error {
-	err := DB.Model(&model.Message{}).Where("(from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?)", fromUserID, toUserID, toUserID, fromUserID).Order("create_at desc").Find(messageList).Error
+func GetMessageList(fromUserID, toUserID, preMsgTime int64, messageList *[]model.Message) error {
+	err := DB.Model(&model.Message{}).Where("(from_user_id = ? AND to_user_id = ? AND create_at > ?) OR (from_user_id = ? AND to_user_id = ? AND create_at > ?)", fromUserID, toUserID, preMsgTime, toUserID, fromUserID, preMsgTime).Order("create_at").First(messageList).Error
 	return err
 }
 

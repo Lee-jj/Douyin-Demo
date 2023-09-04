@@ -6,5 +6,5 @@ type Message struct {
 	ToUserID   int64  `gorm:"column:to_user_id" json:"to_user_id"`
 	FromUserID int64  `gorm:"column:from_user_id" json:"from_user_id"`
 	Content    string `gorm:"column:content" json:"content"`
-	CreateAt   string `gorm:"column:create_at" json:"create_time"` // yyyy-MM-dd HH:MM:ss
+	CreateAt   int64  `gorm:"column:create_at" json:"create_time"` // yyyy-MM-dd HH:MM:ss
 }
