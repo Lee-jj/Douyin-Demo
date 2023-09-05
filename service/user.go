@@ -148,8 +148,8 @@ func CreateRegisterUser(username, password string) (model.User, error) {
 	newUser := model.User{
 		Name:            username,
 		Password:        hashPassword,
-		Avatar:          "http://192.168.31.246:8080/static/defaultAvatar.jpg",
-		BackgroundImage: "http://192.168.31.246:8080/static/defaultBackground.jpg",
+		Avatar:          "https://img.zcool.cn/community/031278c58b69c54a801219c77a870e4.jpg@260w_195h_1c_1e_1o_100sh.jpg",
+		BackgroundImage: "https://th.bing.com/th/id/OIP.LpGCZtPBuuR8sZ3cisTtwAHaEo?pid=ImgDet&rs=1",
 		Signature:       "I have nothing to say",
 	}
 
