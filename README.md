@@ -58,3 +58,6 @@ test 目录下为不同场景的功能测试case，可用于验证功能实现�
 1. (已完成)docker部署
 2. 进行测试
 3. 上redis
+
+### 青训营汇总文档
+[[小试牛刀]青训营大项目答辩汇报文档](https://kvalmttjdc5.feishu.cn/docx/QyF7du0RdoID9Jx3DMic2Cqfn9g)
