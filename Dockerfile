@@ -11,4 +11,4 @@ RUN go env -w GOPROXY=https://goproxy.cn,direct \
 
 EXPOSE 8080
 
-CMD["/apps/Douyin-Demo"]
+CMD ["/apps/Douyin-Demo"]
