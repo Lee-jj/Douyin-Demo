@@ -12,6 +12,24 @@ docker-compose up
 
 **运行前，在config.ini中修改为本机对应的ip地址**
 
+config.ini 样例如下：
+
+```shell
+[mysql]
+user = user
+password = mysql123
+ip = xxxxxxxx
+port = 3306
+database = douyin
+
+[minio]
+endpoint = xxxxxxxx:端口号
+accessKeyID = "minioadmin"
+secretAccessKey = "minioadmin"
+videoBucket = "douyin-video"
+imageBucket = "douyin-image"
+```
+
 其中可能会遇到的错误：
 1. wait-for.sh 无权限，解决方法：在项目路径下赋予其权限 `sudo chmod 777 wait-for-it.sh`
 
@@ -38,5 +56,5 @@ test 目录下为不同场景的功能测试case，可用于验证功能实现�
 
 ### 后续改进
 1. (已完成)docker部署
-2. 上redis
-3. 进行测试
+2. 进行测试
+3. 上redis
