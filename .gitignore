@@ -25,4 +25,4 @@ go.work
 
 .idea
 
-*.ini
+*.yaml

@@ -36,19 +36,6 @@ func InitMinio() {
 	imageBucket := conf.Minio.ImageBucket
 	useSSL := false
 
-	// using go-ini import ini
-	// cfg, err := ini.Load("config.ini")
-	// if err != nil {
-	// 	panic(common.ErrorGetConfigFaild)
-	// }
-
-	// endpoint := cfg.Section("minio").Key("endpoint").String()
-	// accessKeyID := cfg.Section("minio").Key("accessKeyID").String()
-	// secretAccessKey := cfg.Section("minio").Key("secretAccessKey").String()
-	// videoBucket := cfg.Section("minio").Key("videoBucket").String()
-	// imageBucket := cfg.Section("minio").Key("imageBucket").String()
-	// useSSL := false
-
 	minioClient, err := minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
 		Secure: useSSL,

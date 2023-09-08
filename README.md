@@ -10,24 +10,23 @@
 docker-compose up
 ```
 
-**运行前，在config.ini中修改为本机对应的ip地址**
+**运行前，在config.yaml中修改为本机对应的ip地址**
 
-config.ini 样例如下：
+config.yaml 样例如下：
 
 ```shell
-[mysql]
-user = user
-password = mysql123
-ip = xxxxxxxx
-port = 3306
-database = douyin
-
-[minio]
-endpoint = xxxxxxxx:端口号
-accessKeyID = "minioadmin"
-secretAccessKey = "minioadmin"
-videoBucket = "douyin-video"
-imageBucket = "douyin-image"
+mysql:
+  user: root
+  password: mysql123
+  ip: 127.0.0.1
+  port: 3306
+  database: douyin
+minio:
+  endpoint: 192.168.31.246:9000
+  accessKeyID: minioadmin
+  secretAccessKey: minioadmin
+  videoBucket: douyin-video
+  imageBucket: douyin-image
 ```
 
 其中可能会遇到的错误：
