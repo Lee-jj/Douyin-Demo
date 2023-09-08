@@ -12,7 +12,7 @@ var (
 	ErrorUserNameInvalid  = errors.New("用户名长度超过16位")
 	ErrorPasswordEmpty    = errors.New("密码为空")
 	ErrorPasswordInvalid  = errors.New("密码长度不足6位或超过16位")
-	ErrorGetIniFaild      = errors.New("加载ini文件失败")
+	ErrorGetConfigFaild   = errors.New("加载配置文件失败")
 	ErrorDBMigrateFaild   = errors.New("数据库迁移失败")
 	ErrorUserNotFound     = errors.New("未查询到该用户")
 	ErrorSQLFaild         = errors.New("SQL执行错误")

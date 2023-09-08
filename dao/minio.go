@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"DOUYIN-DEMO/common"
+	"DOUYIN-DEMO/config"
 	"context"
 	"fmt"
 	"log"
@@ -11,7 +11,6 @@ import (
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"gopkg.in/ini.v1"
 )
 
 type Minio struct {
@@ -28,17 +27,27 @@ func GetMinio() Minio {
 }
 
 func InitMinio() {
-	cfg, err := ini.Load("config.ini")
-	if err != nil {
-		panic(common.ErrorGetIniFaild)
-	}
-
-	endpoint := cfg.Section("minio").Key("endpoint").String()
-	accessKeyID := cfg.Section("minio").Key("accessKeyID").String()
-	secretAccessKey := cfg.Section("minio").Key("secretAccessKey").String()
-	videoBucket := cfg.Section("minio").Key("videoBucket").String()
-	imageBucket := cfg.Section("minio").Key("imageBucket").String()
+	// using viper import yaml
+	conf := config.GetConfig()
+	endpoint := conf.Minio.Endpoint
+	accessKeyID := conf.Minio.AccessKsyID
+	secretAccessKey := conf.Minio.SecretAccessKey
+	videoBucket := conf.Minio.VideoBucket
+	imageBucket := conf.Minio.ImageBucket
 	useSSL := false
+
+	// using go-ini import ini
+	// cfg, err := ini.Load("config.ini")
+	// if err != nil {
+	// 	panic(common.ErrorGetConfigFaild)
+	// }
+
+	// endpoint := cfg.Section("minio").Key("endpoint").String()
+	// accessKeyID := cfg.Section("minio").Key("accessKeyID").String()
+	// secretAccessKey := cfg.Section("minio").Key("secretAccessKey").String()
+	// videoBucket := cfg.Section("minio").Key("videoBucket").String()
+	// imageBucket := cfg.Section("minio").Key("imageBucket").String()
+	// useSSL := false
 
 	minioClient, err := minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),

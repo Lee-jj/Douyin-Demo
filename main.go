@@ -1,6 +1,7 @@
 package main
 
 import (
+	"DOUYIN-DEMO/config"
 	"DOUYIN-DEMO/dao"
 	"DOUYIN-DEMO/model"
 	"DOUYIN-DEMO/router"
@@ -13,6 +14,7 @@ func main() {
 
 	r := gin.Default()
 
+	config.LoadConfig() // init config
 	dao.InitMinio()
 	dao.InitMySQL()
 	dao.DB.AutoMigrate(&model.User{}, &model.Video{}, &model.Favorite{}, &model.Comment{}, &model.Relation{}, &model.Message{})
