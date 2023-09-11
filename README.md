@@ -2,6 +2,8 @@
 
 ## 抖音项目服务端简单示例
 
+使用ngrok内网穿透的演示地址: https://flowing-remarkably-worm.ngrok-free.app
+
 需要连接MySQL以及Minio以读取用户数据和视频文件
 
 运行
